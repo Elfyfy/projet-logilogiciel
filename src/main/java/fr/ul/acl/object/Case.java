@@ -29,10 +29,13 @@ public class Case {
     public int getCoordY() {
         return coordY;
     }
+    public String getSprite() {
+        return sprite;
+    }
 
     // Setter des attributs
     public void setDecouvert() {
-        decouvert = true;
+        decouvert = true; // On ne modifiera l attribut decouvert seulement lorsque le joueur decouvre une case;
     }
     public void setAccessible(boolean acces) {
         accessible = acces;
@@ -42,5 +45,8 @@ public class Case {
     }
     public void setCoordY(int y) {
         coordY = y;
+    }
+    public void setSprite(String affichage) {
+        sprite = affichage;
     }
 }
