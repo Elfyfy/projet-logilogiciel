@@ -5,13 +5,15 @@ public class Case {
     private boolean accessible;
     private int coordX;
     private int coordY;
+    private String sprite;
 
     // Constructeurs de la classe
-    public Case(boolean acces,int x,int y) {
+    public Case(boolean acces,int x,int y,String affichage) {
         decouvert = false;
         accessible = acces;
         coordX = x;
         coordY = y;
+        sprite = affichage;
     }
 
     // Getter des attributs
