@@ -16,9 +16,9 @@ Démineur-Labyrinthe: un plateau de 15*25 avec des bombes “classiques” de d�
 
 
 ## Travail à faire :
+### À faire en premier :
 - Créer des plateaux de 15*25 et l’emplacement des bombes
 
-### À faire en premier :
 
 - Donner le point de départ et de fin, vérifier que le chemin est faisable
 
