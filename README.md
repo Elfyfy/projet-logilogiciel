@@ -1,3 +1,8 @@
 # projet-logilogiciel
-bah c'est le projet
-Hello, Max la Menace !
+Backlog :
+
+Julien + Nolan --> Interface graphique
+Maxence + Jules --> Logique du jeu
+Mathis --> Test du fonctionnement
+
+
