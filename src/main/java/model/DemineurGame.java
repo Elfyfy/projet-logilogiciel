@@ -28,7 +28,6 @@ public class DemineurGame implements Game {
 		calculerVoisines();
 	}
 
-	/** Place nbMines mines à des positions aléatoires, sans doublon. */
 	private void placerMines(int nbMines) {
 		Random alea = new Random();
 		int posees = 0;
