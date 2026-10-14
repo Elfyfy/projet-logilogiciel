@@ -31,13 +31,15 @@ public class DemineurPainter implements GamePainter {
 				crayon.fillRect(x, y, TAILLE_CASE, TAILLE_CASE);
 				crayon.setColor(Color.BLACK);
 				String texte = "";
+				Case case_ = jeu.getCase(l, c);
 
-				if (jeu.getEtat(l, c) == DemineurGame.DRAPEAU) {
+				if (case_.getDrapeau()) {
 					texte = "F";
-				} else if (jeu.estMine(l, c)) {
-					texte = "*";
-				} else if (jeu.getVoisines(l, c) > 0) {
-					texte = String.valueOf(jeu.getVoisines(l, c));
+				} else if (case_ instanceof CaseMinee) {
+					texte = case_.getSprite();            // "*"
+				} else if (case_ instanceof CaseLibre) {
+					int n = ((CaseLibre) case_).getNMines();
+					if (n > 0) texte = String.valueOf(n);
 				}
 				crayon.drawString(texte, x + 10, y + 21);
 				crayon.drawRect(x, y, TAILLE_CASE, TAILLE_CASE);
