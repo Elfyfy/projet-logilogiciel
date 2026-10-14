@@ -80,10 +80,12 @@ public class DemineurGame implements Game {
 		case DOWN:  if (curseurLigne < lignes - 1) curseurLigne++; break;
 		case LEFT:  if (curseurColonne > 0) curseurColonne--; break;
 		case RIGHT: if (curseurColonne < colonnes - 1) curseurColonne++; break;
+		case FLAG: 
+		if (etats[curseurLigne][curseurColonne] == DRAPEAU) {etats[curseurLigne][curseurColonne] = 0;} 
+		else {etats[curseurLigne][curseurColonne] = DRAPEAU;} break;
 		default: break;
 		}
 	}
-
 	@Override
 	public boolean isFinished() {
 		return false;
