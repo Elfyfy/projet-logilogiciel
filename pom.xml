@@ -52,7 +52,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>fr.ul.acl.start.Main</mainClass>
+                            <mainClass>start.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
