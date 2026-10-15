@@ -1,5 +1,4 @@
 # projet-logilogiciel
-# Projet Java — Jeu de labyrinthe
 
 ## 1. Présentation du projet
 
