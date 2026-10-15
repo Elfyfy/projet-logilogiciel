@@ -1,42 +1,110 @@
 # projet-logilogiciel
-## Backlog :
+# Projet Java — Jeu de labyrinthe
 
+## 1. Présentation du projet
 
-Julien + Nolan --> Interface graphique
-
-
-Maxence + Jules --> Logique du jeu
-
-
-Mathis --> Test du fonctionnement
-
-
-## But du jeu :
 Démineur-Labyrinthe: un plateau de 15*25 avec des bombes “classiques” de démineur, ainsi que des mines particulières que le personnage doit déminer. Lors du déminage, une zone d’explosion apparaît avec un temps donné pour fuir de cette zone au risque d’exploser et de perdre. De plus, il a aussi le risque de perdre avec les bombes classiques. Le personnage a aussi la mission d’aller d’un point A (avec une mini zone sans bombes) à un point B pour finir la partie. 
 
+L'application est développée en Java et utilise Maven pour automatiser la compilation, l'exécution des tests et la génération du fichier JAR.
 
-## Travail à faire :
-### À faire en premier :
-- Créer des plateaux de 15*25 et l’emplacement des bombes
+## 2. Prérequis
 
+Les outils suivants sont nécessaires pour compiler et exécuter le projet :
 
-- Donner le point de départ et de fin, vérifier que le chemin est faisable
+- **JDK :** Java 21
+- **Maven :** Apache Maven 3.8.7
+- **JUnit Jupiter :** 5.12.2, pour les tests unitaires
 
+Vérifier les installations avec les commandes suivantes :
 
-- Le code des numéros pour indiquer le nombre de bombes à côté
+```bash
+java -version
+javac -version
+mvn -version
+```
 
-### Moins urgent :
-- Le code des mines et leurs zones d’explosion avec le temps de fuite
+## 3. Récupération du projet
 
+Cloner le dépôt Git :
 
-- Créer la zone de départ avec les numéros
+```bash
+git clone https://github.com/Elfyfy/projet-logilogiciel
+```
 
+Se placer ensuite dans le dossier du projet :
 
-- Interface graphique
+```bash
+cd projet-logilogiciel
+```
 
+## 4. Compilation
 
-### À faire en dernier :
-- Faire le personnage 
+Pour compiler le projet :
 
+```bash
+mvn clean compile
+```
 
-- Indiquer le nombre de bombes présentes sur le plateau
+Cette commande supprime les fichiers de compilation précédents, puis compile les sources Java.
+
+## 5. Exécution des tests
+
+Pour compiler et exécuter les tests unitaires :
+
+```bash
+mvn test
+```
+
+Les tests sont écrits avec JUnit Jupiter.
+
+## 6. Exécution de l'application
+
+### Méthode 1 : avec Maven
+
+```bash
+mvn compile exec:java
+```
+
+### Méthode 2 : avec le fichier JAR
+
+Générer le fichier JAR :
+
+```bash
+mvn clean package
+```
+
+Exécuter ensuite l'application :
+
+```bash
+java -jar target/ProjetJava-1.0-SNAPSHOT.jar
+```
+
+## 7. Structure du projet
+
+```text
+projet-logilogiciel/
+├── pom.xml
+├── README.md
+├── docs/
+│   ├── sprint-1/
+│   └── sprint-2/
+└── src/
+    ├── main/
+    │   └── java/
+    └── test/
+        └── java/
+```
+
+- `pom.xml` : configuration Maven et dépendances.
+- `src/main/java/` : code source de l'application.
+- `src/test/java/` : tests unitaires.
+- `docs/` : backlogs, diagrammes UML et comptes rendus des sprints.
+- `README.md` : documentation principale du projet.
+
+## 8. Équipe
+
+- OROZCO Julien
+- CRANSAC-LORINEAU Nolan
+- CLAUSS Jules
+- GUERGUIL Maxence
+- CHENU Mathis
