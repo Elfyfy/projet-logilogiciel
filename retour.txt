@@ -1,0 +1,12 @@
+Retour fin de sprint 1 15/10
+
+- Rendre executable avec maven
+- README.md avec consignes d'éxécutions et de jeu
+- faire review de backlog1 avant de passer à la suite, avec répartitions des taches etc 
+- créer diagrammes UML correspondants à la fin du sprint 1
+- Backlog sprint 2
+- Puis UML correspondants au sprint 2.
+- Développement java
+- penser à ajouter des tests (pour le sprint 3 au moins)
+
+
