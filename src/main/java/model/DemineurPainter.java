@@ -34,7 +34,7 @@ public class DemineurPainter implements GamePainter {
 				Case case_ = jeu.getCase(l, c);
 
 				if (case_.getDrapeau()) {
-					texte = "F";
+					texte = "D";
 				} else if (case_ instanceof CaseMinee) {
 					texte = case_.getSprite();            // "*"
 				} else if (case_ instanceof CaseLibre) {
