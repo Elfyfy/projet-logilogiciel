@@ -27,19 +27,29 @@ public class DemineurPainter implements GamePainter {
 
 				int x = c * TAILLE_CASE;
 				int y = l * TAILLE_CASE;
-				crayon.setColor(Color.LIGHT_GRAY);
-				crayon.fillRect(x, y, TAILLE_CASE, TAILLE_CASE);
+				Case case_ = jeu.getCase(l, c);
+				if (case_.getDecouvert()) {
+					crayon.setColor(new Color(225, 0, 225));
+					crayon.fillRect(x, y, TAILLE_CASE, TAILLE_CASE);
+					crayon.setColor(new Color(225, 225, 0));
+					crayon.drawRect(x, y, TAILLE_CASE - 1, TAILLE_CASE - 1);
+				} else {
+					crayon.setColor(Color.LIGHT_GRAY);
+					crayon.fillRect(x, y, TAILLE_CASE, TAILLE_CASE);
+				}
+
 				crayon.setColor(Color.BLACK);
 				String texte = "";
-				Case case_ = jeu.getCase(l, c);
 
-				if (case_.getDrapeau()) {
+								if (case_.getDecouvert()) {
+					if (case_ instanceof CaseMinee) {
+						texte = case_.getSprite();
+					} else if (case_ instanceof CaseLibre) {
+						int n = ((CaseLibre) case_).getNMines();
+						if (n > 0) texte = String.valueOf(n);
+					}
+				} else if (case_.getDrapeau()) {
 					texte = "F";
-				} else if (case_ instanceof CaseMinee) {
-					texte = case_.getSprite();            // "*"
-				} else if (case_ instanceof CaseLibre) {
-					int n = ((CaseLibre) case_).getNMines();
-					if (n > 0) texte = String.valueOf(n);
 				}
 				crayon.drawString(texte, x + 10, y + 21);
 				crayon.drawRect(x, y, TAILLE_CASE, TAILLE_CASE);
