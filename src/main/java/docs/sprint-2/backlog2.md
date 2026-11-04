@@ -1,4 +1,4 @@
-# Sprint 1 — Backlog de sprint
+# Sprint 2 — Backlog de sprint
 
 ## 1. Objectif du sprint
 
