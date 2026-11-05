@@ -14,3 +14,4 @@ Finaliser les fonctionnalités principales du démineur afin d'obtenir un jeu en
 | 4 | Amélioration de l'interface | Ajouter des indications visuelles pour la victoire et la défaite et améliorer la lisibilité du jeu. | Moyenne | Nolan / Julien | Les différents états de la partie sont clairement visibles. | À faire |
 | 5 | Vérification du fonctionnement global | Tester les différentes mécaniques du jeu et corriger les éventuels bugs. | Haute | Mathis | Les fonctionnalités principales fonctionnent correctement ensemble. | À faire |
 | 6 | Tests unitaires | Compléter les tests JUnit pour vérifier les conditions de victoire, de défaite et la gestion des drapeaux. | Moyenne | Mathis | Les tests passent avec `mvn test`. | À faire |
+| 7 | Chronomètre | Créer un chronomètre pour suivre le temps au cours d'une game. | Faible | Mathis | Le chrnomètre se lance au premier clic et s'arrête lorsqu'une mine est découverte. | À faire |
