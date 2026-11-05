@@ -195,4 +195,47 @@ public class DemineurGameTest {
         assertTrue(jeu.getCase(0, 0) instanceof CaseMinee);
         assertTrue(jeu.getCase(0, 0).getDecouvert());
     }
+
+    @Test
+    public void testAucunDrapeauAuDebut() {
+        DemineurGame jeu = new DemineurGame(5, 5, 5);
+
+        assertEquals(0, jeu.getNbDrapeaux());
+        assertEquals(5, jeu.getMinesRestantes());
+    }
+
+    @Test
+    public void testPlacerDrapeau() {
+        DemineurGame jeu = new DemineurGame(5, 5, 5);
+
+        jeu.evolve(Cmd.FLAG);
+
+        assertEquals(1, jeu.getNbDrapeaux());
+        assertEquals(4, jeu.getMinesRestantes());
+    }
+
+    @Test
+    public void testRetirerDrapeau() {
+        DemineurGame jeu = new DemineurGame(5, 5, 5);
+
+        jeu.evolve(Cmd.FLAG);
+        jeu.evolve(Cmd.FLAG);
+
+        assertEquals(0, jeu.getNbDrapeaux());
+        assertEquals(5, jeu.getMinesRestantes());
+    }
+
+    @Test
+    public void testPlusieursDrapeaux() {
+        DemineurGame jeu = new DemineurGame(5, 5, 5);
+
+        jeu.evolve(Cmd.FLAG);
+        jeu.evolve(Cmd.RIGHT);
+        jeu.evolve(Cmd.FLAG);
+        jeu.evolve(Cmd.DOWN);
+        jeu.evolve(Cmd.FLAG);
+
+        assertEquals(3, jeu.getNbDrapeaux());
+        assertEquals(2, jeu.getMinesRestantes());
+    }
 }

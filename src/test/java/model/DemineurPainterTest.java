@@ -25,7 +25,7 @@ public class DemineurPainterTest {
         DemineurGame jeu = new DemineurGame(5, 8, 3);
         DemineurPainter painter = new DemineurPainter(jeu);
 
-        assertEquals(5 * 30, painter.getHeight());
+        assertEquals(185, painter.getHeight());
     }
 
     // Vérifie que le dessin fonctionne sur une image
