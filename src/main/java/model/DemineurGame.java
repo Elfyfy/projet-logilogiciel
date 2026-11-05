@@ -12,6 +12,7 @@ public class DemineurGame implements Game {
 	private Case[][] grille;
 	private int curseurLigne = 0;
 	private int curseurColonne = 0;
+	private Chronometre chronometre = new Chronometre();
 
 	public DemineurGame(int lignes, int colonnes, int nbMines) {
 		this.lignes = lignes;
@@ -74,6 +75,8 @@ public class DemineurGame implements Game {
 	Case cible = grille[l][c];
 	if (cible.getDecouvert() || cible.getDrapeau()) return;
 
+	chronometre.demarrer();
+
 	cible.setDecouvert();
 
 	if (cible instanceof CaseLibre && ((CaseLibre) cible).getNMines() == 0) {
@@ -89,6 +92,7 @@ public class DemineurGame implements Game {
 	public Case getCase(int l, int c) { return grille[l][c]; }
 	public int getCurseurLigne() { return curseurLigne; }
 	public int getCurseurColonne() { return curseurColonne; }
+	public Chronometre getChronometre() { return chronometre; }
 
 	@Override
 	public void evolve(Cmd cmd) {

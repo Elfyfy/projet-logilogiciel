@@ -10,6 +10,7 @@ import engine.GamePainter;
 public class DemineurPainter implements GamePainter {
 
 	private static final int TAILLE_CASE = 30;
+	private static final int HAUTEUR_HEADER = 35;
 
 	private DemineurGame jeu;
 
@@ -22,11 +23,23 @@ public class DemineurPainter implements GamePainter {
 		Graphics2D crayon = (Graphics2D) im.getGraphics();
 		crayon.setFont(new Font("SansSerif", Font.BOLD, 16));
 
+		// Fond de l'en-tête
+		crayon.setColor(new Color(20, 26, 36));
+		crayon.fillRect(0, 0, getWidth(), HAUTEUR_HEADER);
+
+		// Affichage du chronomètre
+		crayon.setColor(Color.WHITE);
+		crayon.setFont(new Font("SansSerif", Font.BOLD, 18));
+
+		String temps = jeu.getChronometre().getTempsFormate();
+
+		crayon.drawString("Temps : " + temps, 10, 25);
+
 		for (int l = 0; l < jeu.getLignes(); l++) {
 			for (int c = 0; c < jeu.getColonnes(); c++) {
 
 				int x = c * TAILLE_CASE;
-				int y = l * TAILLE_CASE;
+				int y = HAUTEUR_HEADER + l * TAILLE_CASE;
 				Case case_ = jeu.getCase(l, c);
 				if (case_.getDecouvert()) {int voisines = 0;
 					if (case_ instanceof CaseLibre) {
@@ -92,7 +105,7 @@ public class DemineurPainter implements GamePainter {
 
 	@Override
 	public int getHeight() {
-		return jeu.getLignes() * TAILLE_CASE;
+		return jeu.getLignes() * TAILLE_CASE + HAUTEUR_HEADER;
 	}
 
 }
