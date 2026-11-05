@@ -27,13 +27,21 @@ public class DemineurPainter implements GamePainter {
 		crayon.setColor(new Color(20, 26, 36));
 		crayon.fillRect(0, 0, getWidth(), HAUTEUR_HEADER);
 
-		// Affichage du chronomètre
+		// Police
 		crayon.setColor(Color.WHITE);
-		crayon.setFont(new Font("SansSerif", Font.BOLD, 18));
+		crayon.setFont(new Font("SansSerif", Font.BOLD, 14));
 
+		// Chronomètre à gauche
 		String temps = jeu.getChronometre().getTempsFormate();
+		crayon.drawString("Temps : " + temps, 10, 23);
 
-		crayon.drawString("Temps : " + temps, 10, 25);
+		// Compteur de drapeaux à droite
+		String drapeaux = "Drapeaux : " + jeu.getNbDrapeaux()
+				+ "/" + jeu.getNbMines();
+
+		int largeurTexte = crayon.getFontMetrics().stringWidth(drapeaux);
+
+		crayon.drawString(drapeaux, getWidth() - largeurTexte - 10, 23);
 
 		for (int l = 0; l < jeu.getLignes(); l++) {
 			for (int c = 0; c < jeu.getColonnes(); c++) {
