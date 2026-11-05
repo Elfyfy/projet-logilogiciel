@@ -12,12 +12,14 @@ public class DemineurGame implements Game {
 	private Case[][] grille;
 	private int curseurLigne = 0;
 	private int curseurColonne = 0;
+	private int nbMines;
 	private Chronometre chronometre = new Chronometre();
 
 	public DemineurGame(int lignes, int colonnes, int nbMines) {
 		this.lignes = lignes;
 		this.colonnes = colonnes;
 		this.grille = new Case[lignes][colonnes];
+		this.nbMines = nbMines;
 
 		placerMines(nbMines);
 		creerCasesLibres();
@@ -86,6 +88,19 @@ public class DemineurGame implements Game {
 			}
 		}
 	}
+
+	private int NbDrapeaux() {
+		int compteur = 0;
+		for (int l = 0; l < lignes; l++) {
+			for (int c = 0; c < colonnes; c++) {
+				if (grille[l][c].getDrapeau()) {
+					compteur++;
+				}
+			}
+		}
+		return compteur;
+	}
+
 	// Getters
 	public int getLignes() { return lignes; }
 	public int getColonnes() { return colonnes; }
@@ -93,7 +108,11 @@ public class DemineurGame implements Game {
 	public int getCurseurLigne() { return curseurLigne; }
 	public int getCurseurColonne() { return curseurColonne; }
 	public Chronometre getChronometre() { return chronometre; }
+	public int getNbMines() { return nbMines; }
+	public int getMinesRestantes() { return nbMines - getNbDrapeaux(); }
+	public int getNbDrapeaux() { return NbDrapeaux(); }
 
+	
 	@Override
 	public void evolve(Cmd cmd) {
 		switch (cmd) {
