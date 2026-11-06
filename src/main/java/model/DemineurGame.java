@@ -12,7 +12,7 @@ public class DemineurGame implements Game {
 	private Case[][] grille;
 	private int curseurLigne = 0;
 	private int curseurColonne = 0;
-	private int nbMines;
+	private int nbMines; 
 	private Chronometre chronometre = new Chronometre();
 
 	public DemineurGame(int lignes, int colonnes, int nbMines) {
@@ -21,21 +21,64 @@ public class DemineurGame implements Game {
 		this.grille = new Case[lignes][colonnes];
 		this.nbMines = nbMines;
 
-		placerMines(nbMines);
+		placerMines(nbMines,0,0); //pt de départ du joueur.euse
 		creerCasesLibres();
 		calculerVoisines();
 	}
 
-	private void placerMines(int nbMines) {
-		Random alea = new Random();
-		int posees = 0;
-		while (posees < nbMines) {
-			int l = alea.nextInt(lignes);
-			int c = alea.nextInt(colonnes);
-			if (grille[l][c] == null) {
-				grille[l][c] = new CaseMinee(c, l);
-				posees++;
-			}
+	private int abs(int z){if(z<0){return abs(-z);};return z;}
+	// valeur absolue
+
+	private boolean isDefined(int l,int c){return(l>-1)&&(c>-1)&&(l<lignes)&&(c<colonnes);}
+	// vérifie que la case l,c est valide dans la grille de jeu
+
+	private boolean changed(int[][][] verif){
+		for(int l=0;l<lignes;l++){for(int c=0;c<colonnes;c++){if(verif[l][c][0]!=verif[l][c][1]){return true;}}
+		};return false;} //vérifie si verif a été modifiée lors de l'étape de vérification courante
+
+	private int KAround(int k,int l,int c,int[][][] verif){
+		int count=0;
+		for (int dl = -1; dl <= 1; dl++) {
+			for (int dc = -1; dc <= 1; dc++) {
+				if (dl == 0 && dc == 0) continue;
+				int nl = l + dl;
+				int nc = c + dc;
+				if (isDefined(nl,nc) && (verif[nl][nc][0]==k)) {count++;}}}
+		return count;} //nb d'élément(s) k autour de la case (i,j)
+
+	private void placerMines(int nbMines,int lDep,int cDep) {
+		boolean keep=true;
+		while (keep) {
+			Random alea = new Random();
+			int posees = 0;
+			int[][][] verif=new int[lignes][colonnes][3];
+			// 0:unknown, 1:pinned, 2:swept
+			//verif[i][j]: [état de la case (i,j) à l'étape de vérification n; à l'étape n-1,nb de mines autour]
+			verif[lDep][cDep][0]=2;
+			while (posees < nbMines) {
+				int l = alea.nextInt(lignes);
+				int c = alea.nextInt(colonnes);
+				if((abs(l-lDep)<2)&&(abs(c-cDep)<2)) continue;
+				if (grille[l][c] == null) {
+					grille[l][c] = new CaseMinee(c, l);
+					posees++;
+					verif[l][c][2]++;}}
+			while (changed(verif)){
+				for(int l=0;l<lignes;l++){for(int c=0;c<colonnes;c++){verif[l][c][1]=verif[l][c][0];}}
+				for(int l=0;l<lignes;l++){
+					for(int c=0;c<colonnes;c++){
+						////si nb pinned = nb mines indiquées, on peut draguer ce qui est draguable
+						if(KAround(1,l,c,verif)==verif[l][c][2]){
+							for(int i=l-1;i<l+2;i++){ 
+								for(int j=c-1;j<c+2;j++){
+									if(isDefined(i,j)&&(verif[i][j][0]==0)){verif[i][j][0]=2;}}}}
+						////si nb unknown = nb mines indiquées, on peut tout pin
+						if(KAround(0,l,c,verif)==verif[l][c][2]){
+							for(int i=l-1;i<l+2;i++){ 
+								for(int j=c-1;j<c+2;j++){
+									if(isDefined(i,j)&&(verif[i][j][0]==0)){verif[i][j][0]=1;}}}} }} }
+			keep=false; //s'il reste une case unknown, les mines sont mal placées, et on continue
+			for(int l=0;l<lignes;l++){for(int c=0;c<colonnes;c++){if(verif[l][c][0]==0){keep=true;}}}
 		}
 	}
 
@@ -61,6 +104,27 @@ public class DemineurGame implements Game {
 						if (dl == 0 && dc == 0) continue;
 						int nl = l + dl;
 						int nc = c + dc;
+						if (isDefined(nl,nc) && grille[nl][nc] instanceof CaseMinee) {
+							compteur++;
+						}
+					}
+				}
+				((CaseLibre) grille[l][c]).setNMines(compteur);
+			}
+		}
+	}
+
+	private void calculerFlag() {
+		for (int l = 0; l < lignes; l++) {
+			for (int c = 0; c < colonnes; c++) {
+				if (!(grille[l][c] instanceof CaseLibre)) continue;
+
+				int compteur = 0;
+				for (int dl = -1; dl <= 1; dl++) {
+					for (int dc = -1; dc <= 1; dc++) {
+						if (dl == 0 && dc == 0) continue;
+						int nl = l + dl;
+						int nc = c + dc;
 						boolean dansLaGrille = nl >= 0 && nl < lignes && nc >= 0 && nc < colonnes;
 						if (dansLaGrille && grille[nl][nc] instanceof CaseMinee) {
 							compteur++;
@@ -71,7 +135,6 @@ public class DemineurGame implements Game {
 			}
 		}
 	}
-
 	private void decouvrir(int l, int c) {
 	if (l < 0 || l >= lignes || c < 0 || c >= colonnes) return;
 	Case cible = grille[l][c];
