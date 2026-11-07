@@ -14,4 +14,7 @@ public class Character {
         this.sprites = sprites;
         this.dir = Cmd.IDLE;
     }
+
+    public int getRow() {return this.row;}
+    public void setRow(int l) {this.row = l;}
 }
