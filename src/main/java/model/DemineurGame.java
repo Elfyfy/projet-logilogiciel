@@ -27,7 +27,7 @@ public class DemineurGame implements Game {
 	}
 
 	private int abs(int z){if(z<0){return abs(-z);};return z;}
-	// valeur absolue
+	// valeur absolue (on peut utiliser Math.abs())
 
 	private boolean isDefined(int l,int c){return(l>-1)&&(c>-1)&&(l<lignes)&&(c<colonnes);}
 	// vérifie que la case l,c est valide dans la grille de jeu
