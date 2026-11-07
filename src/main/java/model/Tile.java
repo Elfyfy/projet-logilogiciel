@@ -21,4 +21,7 @@ public class Tile {
     public void setRow(int l) {this.row = l;}
     public int getColumn() {return this.column;}
     public void setColumn(int c) {this.column = c;}
+    public boolean getAccesible() {return this.accessible;}
+    public boolean getUnknown() {return this.unknown;}
+    public void setUnknown(boolean b) {this.unknown = b;}
 }
