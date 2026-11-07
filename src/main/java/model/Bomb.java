@@ -17,4 +17,6 @@ public class Bomb extends Tile {
 
     public int getFuse() {return this.fuse;}
     public void setFuse(int fuse) {this.fuse = fuse;}
+    public int[][] getShape() {return this.shape;}
+    public void setShape(int[][] shape) {this.shape = shape;}
 }
