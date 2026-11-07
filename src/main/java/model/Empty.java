@@ -8,4 +8,7 @@ public class Empty extends Tile {
         super(l,c,true,sprites);
         this.nbMine = 0;
     }
+
+    public int getNbMine() {return this.nbMine;}
+    public void setNbMine(int n) {this.nbMine = n;}
 }
