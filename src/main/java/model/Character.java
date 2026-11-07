@@ -17,4 +17,6 @@ public class Character {
 
     public int getRow() {return this.row;}
     public void setRow(int l) {this.row = l;}
+    public int getColumn() {return this.column;}
+    public void setColumn(int c) {this.column = c;}
 }
