@@ -16,4 +16,9 @@ public class Tile {
         this.pinned = false;
         this.sprites = sprites;
     }
+
+    public int getRow() {return this.row;}
+    public void setRow(int l) {this.row = l;}
+    public int getColumn() {return this.column;}
+    public void setColumn(int c) {this.column = c;}
 }
