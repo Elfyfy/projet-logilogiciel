@@ -24,4 +24,6 @@ public class Tile {
     public boolean getAccesible() {return this.accessible;}
     public boolean getUnknown() {return this.unknown;}
     public void setUnknown(boolean b) {this.unknown = b;}
+    public boolean getPinned() {return this.pinned;}
+    public void setPinned(boolean b) {this.pinned = b;}
 }
