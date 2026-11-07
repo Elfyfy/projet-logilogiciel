@@ -21,4 +21,6 @@ public class Bomb extends Tile {
     public void setShape(int[][] shape) {this.shape = shape;}
     public boolean getActive() {return this.active;}
     public void setActive(boolean b) {this.active = b;}
+    public boolean getBlown() {return this.blown;}
+    public void setBlown(boolean b) {this.blown = b;}
 }
