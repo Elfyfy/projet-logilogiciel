@@ -19,4 +19,6 @@ public class Character {
     public void setRow(int l) {this.row = l;}
     public int getColumn() {return this.column;}
     public void setColumn(int c) {this.column = c;}
+    public Cmd getDir() {return this.dir;}
+    public void setDir(Cmd d) {this.dir = d;}
 }
