@@ -14,4 +14,7 @@ public class Bomb extends Tile {
         this.active = false;
         this.blown = false;
     }
+
+    public int getFuse() {return this.fuse;}
+    public void setFuse(int fuse) {this.fuse = fuse;}
 }
