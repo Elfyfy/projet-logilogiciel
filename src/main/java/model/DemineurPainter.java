@@ -17,11 +17,13 @@ public class DemineurPainter implements GamePainter {
 	private DemineurGame jeu;
 	private BufferedImage imgDrapeau;
 	private BufferedImage imgGilet;
+	private BufferedImage imgMine;
 
 	public DemineurPainter(DemineurGame jeu) {
 		this.jeu = jeu;
 		imgDrapeau = chargerImage("/images/flag.png");
 		imgGilet = chargerImage("/images/gilet.png");
+		imgMine = chargerImage("/images/mine.png");
 	}
 
 	private BufferedImage chargerImage(String chemin) {
@@ -96,8 +98,14 @@ public class DemineurPainter implements GamePainter {
 				String texte = "";
 
 				if (case_.getDecouvert()) {
-					if (case_ instanceof CaseMinee) {
-						texte = case_.getSprite();
+					   if (case_ instanceof CaseMinee) {
+       						if (imgMine != null) {
+           						crayon.drawImage(imgMine, x + 3, y + 3,
+                   					TAILLE_CASE - 6, TAILLE_CASE - 6, null);
+       						} else {
+           						texte = case_.getSprite();
+      			 }
+   
 					} else if (case_ instanceof CaseLibre) {
 						int n = ((CaseLibre) case_).getNMines();
 						if (n > 0) texte = String.valueOf(n);
