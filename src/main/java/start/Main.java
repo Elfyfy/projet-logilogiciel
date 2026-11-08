@@ -9,7 +9,7 @@ public class Main {
 
 	public static void main(String[] args) throws InterruptedException {
 
-		DemineurGame game = new DemineurGame(15,25, 15);
+		DemineurGame game = new DemineurGame(15,25, 25);
 		DemineurPainter painter = new DemineurPainter(game);
 		DemineurController controller = new DemineurController();
 

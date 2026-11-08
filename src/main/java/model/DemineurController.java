@@ -37,7 +37,10 @@ public class DemineurController implements GameController {
 		case 'f':
 			this.commandeEnCours = Cmd.FLAG;
 			break;
-		}
+		case ' ':
+			this.commandeEnCours = Cmd.REVEAL;
+			break;
+			}
 
 	}
 
