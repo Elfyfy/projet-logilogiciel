@@ -118,7 +118,7 @@ public class DemineurPainter implements GamePainter {
 
 		// Curseur dessiné en dernier : il passe par-dessus les drapeaux
 		int xc = jeu.getCurseurColonne() * TAILLE_CASE;
-		int yc = jeu.getCurseurLigne() * TAILLE_CASE;
+		int yc = HAUTEUR_HEADER + jeu.getCurseurLigne() * TAILLE_CASE;
 		if (imgGilet != null) {
 			crayon.drawImage(imgGilet, xc + 2, yc + 2,
 					TAILLE_CASE - 4, TAILLE_CASE - 4, null);
