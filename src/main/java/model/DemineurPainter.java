@@ -11,12 +11,8 @@ import engine.GamePainter;
 
 public class DemineurPainter implements GamePainter {
 
-<<<<<<< HEAD
-	private static final int TAILLE_CASE = 50;
-=======
 	private static final int TAILLE_CASE = 30;
 	private static final int HAUTEUR_HEADER = 35;
->>>>>>> origin/main
 
 	private DemineurGame jeu;
 	private BufferedImage imgDrapeau;
