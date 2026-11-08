@@ -70,20 +70,6 @@ public class DemineurPainter implements GamePainter {
 					}
 					float t = Math.min(voisines, 4) / 4f;
 
-<<<<<<< HEAD
-				if (case_.getDrapeau()) {
-					if (imgDrapeau != null) {
-						crayon.drawImage(imgDrapeau, x + 3, y + 3,
-								TAILLE_CASE - 6, TAILLE_CASE - 6, null);
-					} else {
-						texte = "F";
-					}
-				} else if (case_ instanceof CaseMinee) {
-					texte = case_.getSprite();
-				} else if (case_ instanceof CaseLibre) {
-					int n = ((CaseLibre) case_).getNMines();
-					if (n > 0) texte = String.valueOf(n);
-=======
 					crayon.setColor(new Color(30, 38, 50));
 					crayon.fillRect(x, y, TAILLE_CASE, TAILLE_CASE);
 					crayon.setColor(melanger(new Color(62, 76, 96), new Color(170, 40, 40), t));
@@ -109,7 +95,7 @@ public class DemineurPainter implements GamePainter {
 				crayon.setColor(case_.getDecouvert() ? new Color(225, 232, 240) : new Color(30, 38, 50));
 				String texte = "";
 
-								if (case_.getDecouvert()) {
+				if (case_.getDecouvert()) {
 					if (case_ instanceof CaseMinee) {
 						texte = case_.getSprite();
 					} else if (case_ instanceof CaseLibre) {
@@ -117,8 +103,12 @@ public class DemineurPainter implements GamePainter {
 						if (n > 0) texte = String.valueOf(n);
 					}
 				} else if (case_.getDrapeau()) {
-					texte = "F";
->>>>>>> origin/main
+					if (imgDrapeau != null) {
+						crayon.drawImage(imgDrapeau, x + 3, y + 3,
+								TAILLE_CASE - 6, TAILLE_CASE - 6, null);
+					} else {
+						texte = "F";
+					}
 				}
 				crayon.drawString(texte, x + 10, y + 21);
 				crayon.setColor(new Color(20, 26, 36));
