@@ -12,7 +12,7 @@ public class Main {
 		int lignes = 15;
 		int colonnes = 25;
 
-		int nbMines = MenuDifficulte.choisirNbMines(lignes, colonnes);
+		int nbMines = view.MenuDifficulte.choisirNbMines(lignes, colonnes);
 		if (nbMines < 0) return;
 
 		DemineurGame game = new DemineurGame(lignes, colonnes, nbMines);
