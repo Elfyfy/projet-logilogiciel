@@ -77,12 +77,12 @@ public class DemineurGame implements Game {
 					for(int c=0;c<colonnes;c++){
 						if(verif[l][c][0]!=2)continue;
 						////si nb pinned = nb mines indiquées, on peut draguer ce qui est draguable
-						if(KAround(1,l,c,verif)==verif[l][c][2]){
+						if(PndAround(l,c,verif)==verif[l][c][2]){
 							for(int i=l-1;i<l+2;i++){ 
 								for(int j=c-1;j<c+2;j++){
 									if(isDefined(i,j)&&(verif[i][j][0]==0)){verif[i][j][0]=2;}}}}
 						////si nb unknown = nb mines indiquées, on peut tout pin
-						if(KAround(0,l,c,verif)==verif[l][c][2]){
+						if(UnkAround(l,c,verif)==verif[l][c][2]){
 							for(int i=l-1;i<l+2;i++){ 
 								for(int j=c-1;j<c+2;j++){
 									if(isDefined(i,j)&&(verif[i][j][0]==0)){verif[i][j][0]=1;}}}} }} }
