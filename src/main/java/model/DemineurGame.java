@@ -27,24 +27,23 @@ public class DemineurGame implements Game {
 	}
 
 	private int abs(int z){if(z<0){return abs(-z);};return z;}
-	//non-testée correctement
+	// valeur absolue (on peut utiliser Math.abs())
 
 	private boolean isDefined(int l,int c){return(l>-1)&&(c>-1)&&(l<lignes)&&(c<colonnes);}
-	// vérifie que la case (l,c) est valide dans la grille de jeu
-	//non-testée correctement
+	// vérifie que la case l,c est valide dans la grille de jeu
 
 	private boolean changed(int[][][] verif){
 		for(int l=0;l<lignes;l++){for(int c=0;c<colonnes;c++){if(verif[l][c][0]!=verif[l][c][1]){return true;}}
 		};return false;} //vérifie si verif a été modifiée lors de l'étape de vérification courante
-	//non-testée correctement
 
 	private int KAround(int k,int l,int c,int[][][] verif){
 		int count=0;
-		for (int dl=-1;dl<2;dl++) {
-			for (int dc=-1;dc<2;dc++) {
-				if ((dl==0)&&(dc==0)) continue;
-				int nl=l+dl;int nc=c+dc;
-				if (isDefined(nl,nc)&&(verif[nl][nc][0]==k)){count++;}}}
+		for (int dl = -1; dl <= 1; dl++) {
+			for (int dc = -1; dc <= 1; dc++) {
+				if (dl == 0 && dc == 0) continue;
+				int nl = l + dl;
+				int nc = c + dc;
+				if (isDefined(nl,nc) && (verif[nl][nc][0]==k)) {count++;}}}
 		return count;} //nb d'élément(s) k autour de la case (i,j)
 	//non-testée correctement
 	private int UnkAround(int l,int c,int[][][] verif){return KAround(0,l,c,verif);}
@@ -52,59 +51,46 @@ public class DemineurGame implements Game {
 //	private int SptAround(int l,int c,int[][][] verif){return KAround(2,l,c,verif);}
 
 //	private void KBetween(int k,int l1,int c1,int l2,int c2,int[][][] verif){}
-	private void sprint(int[][][] verif){
-		System.out.print("\n");
-		for(int i=0;i<lignes;i++){for(int j=0;j<colonnes;j++){
-			System.out.print(verif[i][j][0]);
-			System.out.print(verif[i][j][1]);
-			System.out.print(verif[i][j][2]);
-			System.out.print(" ");
-		}
-	System.out.print("\n");}
-	}
-
 	private void placerMines(int nbMines,int lDep,int cDep) {
 		boolean keep=true;
-		Random alea=new Random();
-		int posees;int[][][] verif;	// 0:unknown, 1:pinned, 2:swept
-		//verif[i][j]: [état de (i,j) à l'étape n; à l'étape n-1,nb de mines autour,a une mine]
-		while(keep){
-			posees=0;
-			verif=new int[lignes][colonnes][4];
+		while (keep) {
+			Random alea = new Random();
+			int posees = 0;
+			int[][][] verif=new int[lignes][colonnes][4];
+			// 0:unknown, 1:pinned, 2:swept
+			//verif[i][j]: [état de (i,j) à l'étape n; à l'étape n-1,nb de mines autour,a une mine]
 			verif[lDep][cDep][0]=2;
-			while(posees<nbMines){
-				int l=alea.nextInt(lignes);
-				int c=alea.nextInt(colonnes);
-				if((abs(l-lDep)<2)&&(abs(c-cDep)<2)) continue;//empêche de miner autour du départ
-				if(verif[l][c][3]==0){
+			while (posees < nbMines) {
+				int l = alea.nextInt(lignes);
+				int c = alea.nextInt(colonnes);
+				if((abs(l-lDep)<2)&&(abs(c-cDep)<2)) continue;
+				if (verif[l][c][3]==0) {
 					verif[l][c][3]=1;
 					posees++;
-					for (int dl=-1;dl<2;dl++) {
-						for (int dc=-1;dc<2;dc++) {
-							if ((dl==0)&&(dc==0)) continue;
-							int nl=l+dl;int nc=c+dc;
-							if (isDefined(nl,nc)){verif[l+dl][c+dc][2]++;}}}}}
-			while(changed(verif)){
+					for (int dl = -1; dl <= 1; dl++) {
+						for (int dc = -1; dc <= 1; dc++) {
+							if (dl == 0 && dc == 0) continue;
+							if (isDefined(l+dl,c+dc)) {verif[l][c][2]++;}}} } }
+			while (changed(verif)){
 				for(int l=0;l<lignes;l++){for(int c=0;c<colonnes;c++){verif[l][c][1]=verif[l][c][0];}}
 				for(int l=0;l<lignes;l++){
 					for(int c=0;c<colonnes;c++){
 						if(verif[l][c][0]!=2)continue;
-						//si nb pinned autour = nb mines indiquées, il ne reste que du vide, qu'on drague
-						if(PndAround(l,c,verif)==verif[l][c][2]){
+						////si nb pinned = nb mines indiquées, on peut draguer ce qui est draguable
+						if(KAround(1,l,c,verif)==verif[l][c][2]){
 							for(int i=l-1;i<l+2;i++){ 
 								for(int j=c-1;j<c+2;j++){
 									if(isDefined(i,j)&&(verif[i][j][0]==0)){verif[i][j][0]=2;}}}}
-						//si nb unknown autour = nb mines indiquées, il ne reste que les mines, qu'on pin
-						if(UnkAround(l,c,verif)==verif[l][c][2]){
+						////si nb unknown = nb mines indiquées, on peut tout pin
+						if(KAround(0,l,c,verif)==verif[l][c][2]){
 							for(int i=l-1;i<l+2;i++){ 
 								for(int j=c-1;j<c+2;j++){
 									if(isDefined(i,j)&&(verif[i][j][0]==0)){verif[i][j][0]=1;}}}} }} }
-			keep=false; //s'il reste unknown quelque part, les mines sont mal disposées
+			keep=false; //s'il reste une case unknown, les mines sont mal placées, et on continue
 			for(int l=0;l<lignes;l++){for(int c=0;c<colonnes;c++){if(verif[l][c][0]==0){keep=true;}}}
 		if(keep==false){
 			for(int l=0;l<lignes;l++){for(int c=0;c<colonnes;c++){
-				if(verif[l][c][3]==1){grille[l][c]=new CaseMinee(c,l);}}} }
-		}
+				if(verif[l][c][3]==1){grille[l][c]=new CaseMinee(c,l);}}} } }
 	}
 
 	// Toutes les cases encore vides deviennent des CaseLibre
@@ -138,7 +124,7 @@ public class DemineurGame implements Game {
 			}
 		}
 	}
-	
+
 	private void decouvrir(int l, int c) {
 	if (l < 0 || l >= lignes || c < 0 || c >= colonnes) return;
 	Case cible = grille[l][c];

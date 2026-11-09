@@ -5,6 +5,8 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
+import javax.imageio.ImageIO;
+
 import engine.GamePainter;
 
 public class DemineurPainter implements GamePainter {
@@ -13,9 +15,24 @@ public class DemineurPainter implements GamePainter {
 	private static final int HAUTEUR_HEADER = 35;
 
 	private DemineurGame jeu;
+	private BufferedImage imgDrapeau;
+	private BufferedImage imgGilet;
+	private BufferedImage imgMine;
 
 	public DemineurPainter(DemineurGame jeu) {
 		this.jeu = jeu;
+		imgDrapeau = chargerImage("/images/flag.png");
+		imgGilet = chargerImage("/images/gilet.png");
+		imgMine = chargerImage("/images/mine.png");
+	}
+
+	private BufferedImage chargerImage(String chemin) {
+		try {
+			return ImageIO.read(getClass().getResource(chemin));
+		} catch (Exception e) {
+			System.err.println("Impossible de charger " + chemin);
+			return null;
+		}
 	}
 
 	@Override
@@ -80,24 +97,43 @@ public class DemineurPainter implements GamePainter {
 				crayon.setColor(case_.getDecouvert() ? new Color(225, 232, 240) : new Color(30, 38, 50));
 				String texte = "";
 
-								if (case_.getDecouvert()) {
-					if (case_ instanceof CaseMinee) {
-						texte = case_.getSprite();
+				if (case_.getDecouvert()) {
+					   if (case_ instanceof CaseMinee) {
+       						if (imgMine != null) {
+           						crayon.drawImage(imgMine, x + 3, y + 3,
+                   					TAILLE_CASE - 6, TAILLE_CASE - 6, null);
+       						} else {
+           						texte = case_.getSprite();
+      			 }
+   
 					} else if (case_ instanceof CaseLibre) {
 						int n = ((CaseLibre) case_).getNMines();
 						if (n > 0) texte = String.valueOf(n);
 					}
 				} else if (case_.getDrapeau()) {
-					texte = "F";
+					if (imgDrapeau != null) {
+						crayon.drawImage(imgDrapeau, x + 3, y + 3,
+								TAILLE_CASE - 6, TAILLE_CASE - 6, null);
+					} else {
+						texte = "F";
+					}
 				}
 				crayon.drawString(texte, x + 10, y + 21);
 				crayon.setColor(new Color(20, 26, 36));
 				crayon.drawRect(x, y, TAILLE_CASE, TAILLE_CASE);
-				if (l == jeu.getCurseurLigne() && c == jeu.getCurseurColonne()) {
-					crayon.setColor(Color.YELLOW);
-					crayon.drawRect(x + 1, y + 1, TAILLE_CASE - 2, TAILLE_CASE - 2);
-				}
 			}
+		}
+
+		// Curseur dessiné en dernier : il passe par-dessus les drapeaux
+		int xc = jeu.getCurseurColonne() * TAILLE_CASE;
+		int yc = HAUTEUR_HEADER + jeu.getCurseurLigne() * TAILLE_CASE;
+		if (imgGilet != null) {
+			crayon.drawImage(imgGilet, xc + 2, yc + 2,
+					TAILLE_CASE - 4, TAILLE_CASE - 4, null);
+		} else {
+			// secours : l'ancien contour jaune
+			crayon.setColor(Color.YELLOW);
+			crayon.drawRect(xc + 1, yc + 1, TAILLE_CASE - 2, TAILLE_CASE - 2);
 		}
 	}
 	private Color melanger(Color a, Color b, float t) {
