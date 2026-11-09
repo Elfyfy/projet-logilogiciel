@@ -168,6 +168,7 @@ public class DemineurGame implements Game {
 	public int getMinesRestantes() { return nbMines - getNbDrapeaux(); }
 	public int getNbDrapeaux() { return NbDrapeaux(); }
 	public Bomb[] getBomb() {return this.bombes;}
+	public int getNbBombes() {return this.bombes.length;}
 
 	
 	@Override
@@ -189,6 +190,9 @@ public class DemineurGame implements Game {
 
 	@Override
 	public boolean isFinished() {
-		return false;
+		for (int i = 0; i < this.bombes.length; i++) {
+			Bomb bombe = this.bombes[i];
+			if (!bombe.getBlown()) {return false;}
+		} return true;
 	}
 }
