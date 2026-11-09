@@ -25,19 +25,23 @@ public class MenuDifficulte extends JDialog {
 	private static final int TAILLE_CASE = 30;
 
 	private static final String[] NOMS = {"FACILE", "MOYEN", "DIFFICILE"};
-	private static final int[] MINES = {10, 40, 75};
+	private static final double[] TAUX = {0.05, 0.15, 0.20};
 	private static final Color[] COULEURS = {
 		new Color(86, 168, 120), new Color(206, 156, 64), new Color(196, 66, 60)
 	};
 
+	private int[] nbMines = new int[3];
 	private int choix = 0;
 	private int resultat = -1;
 	private boolean clignote = true;
 	private BufferedImage fond = creerFond();
 	private Timer minuteur;
 
-	private MenuDifficulte() {
+	private MenuDifficulte(int nbCases) {
 		super((Frame) null, "Démineur", true);
+		for (int i = 0; i < 3; i++) {
+			nbMines[i] = Math.max(1, (int) (nbCases * TAUX[i]));
+		}
 
 		JPanel panneau = new JPanel() {
 			@Override
@@ -52,20 +56,20 @@ public class MenuDifficulte extends JDialog {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				switch (e.getKeyChar()) {
-                    case 'z':
-                        choix = (choix + 2) % 3;
-                    break;
-                    case 's':
-                        choix = (choix + 1) % 3;
-                    break;
-                    case ' ':
-                        resultat = choix;
-                        dispose();
-                    break;
-                    case 27:
-                        dispose();
-                    break;
-                }
+				case 'z':
+					choix = (choix + 2) % 3;
+					break;
+				case 's':
+					choix = (choix + 1) % 3;
+					break;
+				case ' ':
+					resultat = choix;
+					dispose();
+					break;
+				case 27:
+					dispose();
+					break;
+				}
 				panneau.repaint();
 			}
 		});
@@ -82,11 +86,11 @@ public class MenuDifficulte extends JDialog {
 		setLocationRelativeTo(null);
 	}
 
-	public static int choisirNbMines() {
-		MenuDifficulte menu = new MenuDifficulte();
+	public static int choisirNbMines(int lignes, int colonnes) {
+		MenuDifficulte menu = new MenuDifficulte(lignes * colonnes);
 		menu.setVisible(true);
 		menu.minuteur.stop();
-		return menu.resultat < 0 ? -1 : MINES[menu.resultat];
+		return menu.resultat < 0 ? -1 : menu.nbMines[menu.resultat];
 	}
 
 	private Rectangle bouton(int i) {
@@ -170,7 +174,7 @@ public class MenuDifficulte extends JDialog {
 			g.setFont(new Font("SansSerif", Font.BOLD, 24));
 			g.drawString(NOMS[i], r.x + 24, r.y + 39);
 			g.setFont(new Font("SansSerif", Font.BOLD, 14));
-			String mines = MINES[i] + " MINES";
+			String mines = nbMines[i] + " MINES";
 			g.drawString(mines, r.x + r.width - 24 - g.getFontMetrics().stringWidth(mines), r.y + 36);
 		}
 
