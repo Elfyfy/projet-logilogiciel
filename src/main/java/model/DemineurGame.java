@@ -22,7 +22,7 @@ public class DemineurGame implements Game {
 		this.grille = new Case[lignes][colonnes];
 		this.nbMines = nbMines;
 		this.bombes = new Bomb[1];
-		this.bombes[0] = new Bomb(lignes,colonnes,null,1,null);
+		this.bombes[0] = new Bomb(lignes,colonnes,1,null);
 
 		placerMines(nbMines,0,0); //pt de départ du joueur.euse
 		creerCasesLibres();

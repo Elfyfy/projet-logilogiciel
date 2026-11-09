@@ -7,7 +7,7 @@ public class Bomb extends Tile {
     private boolean active; 
     private boolean blown;
 
-    public Bomb(int l, int c, Sprite[] sprites, int fuse, int[][] shape) {
+    public Bomb(int l, int c, int fuse, int[][] shape) {
         super(l,c,false,sprites);
         this.fuse = fuse;
         this.shape = shape;
