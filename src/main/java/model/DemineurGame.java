@@ -14,12 +14,15 @@ public class DemineurGame implements Game {
 	private int curseurColonne = 0;
 	private int nbMines; 
 	private Chronometre chronometre = new Chronometre();
+	private Bomb[] bombes; 
 
 	public DemineurGame(int lignes, int colonnes, int nbMines) {
 		this.lignes = lignes;
 		this.colonnes = colonnes;
 		this.grille = new Case[lignes][colonnes];
 		this.nbMines = nbMines;
+		this.bombes = new Bomb[1];
+		this.bombes[0] = new Bomb(lignes,colonnes,null,1,null);
 
 		placerMines(nbMines,0,0); //pt de départ du joueur.euse
 		creerCasesLibres();
@@ -164,6 +167,8 @@ public class DemineurGame implements Game {
 	public int getNbMines() { return nbMines; }
 	public int getMinesRestantes() { return nbMines - getNbDrapeaux(); }
 	public int getNbDrapeaux() { return NbDrapeaux(); }
+	public Bomb[] getBomb() {return this.bombes;}
+	public int getNbBombes() {return this.bombes.length;}
 
 	
 	@Override
@@ -185,6 +190,9 @@ public class DemineurGame implements Game {
 
 	@Override
 	public boolean isFinished() {
-		return false;
+		for (int i = 0; i < this.bombes.length; i++) {
+			Bomb bombe = this.bombes[i];
+			if (!bombe.getBlown()) {return false;}
+		} return true;
 	}
 }

@@ -4,7 +4,7 @@ public class Bomb extends Tile {
 
     private int fuse;
     private int[][] shape;
-    private boolean active;
+    private boolean active; 
     private boolean blown;
 
     public Bomb(int l, int c, Sprite[] sprites, int fuse, int[][] shape) {
