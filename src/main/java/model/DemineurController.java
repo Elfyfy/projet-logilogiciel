@@ -8,15 +8,21 @@ import engine.GameController;
 public class DemineurController implements GameController {
 
 
-	private Cmd commandeEnCours;
+	private volatile Cmd commandeEnCours;
 	
 	public DemineurController() {
 		this.commandeEnCours = Cmd.IDLE;
 	}
 
 	public Cmd getCommand() {
-		return this.commandeEnCours;
-	}
+    Cmd commande = this.commandeEnCours;
+
+    if (commande == Cmd.FLAG || commande == Cmd.REVEAL) {
+        this.commandeEnCours = Cmd.IDLE;
+    }
+
+    return commande;
+}
 
 	@Override
 	public void keyPressed(KeyEvent e) {

@@ -1,50 +1,46 @@
 package engine;
 
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+
 import javax.swing.JFrame;
 
+public class GraphicalInterface {
 
-/**
- * @author Horatiu Cirstea, Vincent Thomas
- *
- * interface graphique avec son controller et son afficheur
- *
- */
-public class GraphicalInterface  {
-
-	/**
-	 * le Panel pour l'afficheur
-	 */
 	private DrawingPanel panel;
-	
-	/**
-	 * la construction de l'interface graphique: JFrame avec panel pour le game
-	 * 
-	 * @param gamePainter l'afficheur a utiliser dans le moteur
-	 * @param gameController l'afficheur a utiliser dans le moteur
-	 * 
-	 */
-	public GraphicalInterface(GamePainter gamePainter, GameController gameController){
-		JFrame f=new JFrame();
+
+	public GraphicalInterface(GamePainter gamePainter, GameController gameController) {
+		JFrame f = new JFrame();
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		// attacher le panel contenant l'afficheur du game
-		this.panel=new DrawingPanel(gamePainter);
+		f.setUndecorated(true);
+
+		this.panel = new DrawingPanel(gamePainter);
 		f.setContentPane(this.panel);
-		
-		// attacher controller au panel du game
-		this.panel.addKeyListener(gameController);	
-		
-		f.pack();
-		f.setVisible(true);
+
+		this.panel.addKeyListener(gameController);
+		this.panel.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) System.exit(0);
+			}
+		});
+
+		GraphicsDevice ecran = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+		if (ecran.isFullScreenSupported()) {
+			ecran.setFullScreenWindow(f);
+		} else {
+			f.setExtendedState(JFrame.MAXIMIZED_BOTH);
+			f.setVisible(true);
+		}
+
 		f.getContentPane().setFocusable(true);
 		f.getContentPane().requestFocus();
 	}
-	
-	/**
-	 * mise a jour du dessin
-	 */
+
 	public void paint() {
-		this.panel.drawGame();	
+		this.panel.drawGame();
 	}
-	
+
 }

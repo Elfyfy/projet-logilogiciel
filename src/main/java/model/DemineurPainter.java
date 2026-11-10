@@ -135,6 +135,7 @@ public class DemineurPainter implements GamePainter {
 			crayon.setColor(Color.YELLOW);
 			crayon.drawRect(xc + 1, yc + 1, TAILLE_CASE - 2, TAILLE_CASE - 2);
 		}
+		crayon.dispose();
 	}
 	private Color melanger(Color a, Color b, float t) {
 		int r = (int) (a.getRed() + (b.getRed() - a.getRed()) * t);
