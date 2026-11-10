@@ -3,6 +3,7 @@ package model;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
@@ -21,9 +22,20 @@ public class DemineurPainter implements GamePainter {
 
 	public DemineurPainter(DemineurGame jeu) {
 		this.jeu = jeu;
-		imgDrapeau = chargerImage("/images/flag.png");
-		imgGilet = chargerImage("/images/gilet.png");
-		imgMine = chargerImage("/images/mine.png");
+		imgDrapeau = redimensionner(chargerImage("/images/flag.png"), TAILLE_CASE - 6);
+		imgGilet = redimensionner(chargerImage("/images/gilet.png"), TAILLE_CASE - 4);
+		imgMine = redimensionner(chargerImage("/images/mine.png"), TAILLE_CASE - 6);
+	}
+
+	private BufferedImage redimensionner(BufferedImage source, int taille) {
+		if (source == null) return null;
+		BufferedImage res = new BufferedImage(taille, taille, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = res.createGraphics();
+		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+		g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+		g.drawImage(source, 0, 0, taille, taille, null);
+		g.dispose();
+		return res;
 	}
 
 	private BufferedImage chargerImage(String chemin) {
@@ -100,8 +112,7 @@ public class DemineurPainter implements GamePainter {
 				if (case_.getDecouvert()) {
 					   if (case_ instanceof CaseMinee) {
        						if (imgMine != null) {
-           						crayon.drawImage(imgMine, x + 3, y + 3,
-                   					TAILLE_CASE - 6, TAILLE_CASE - 6, null);
+           						crayon.drawImage(imgMine, x + 3, y + 3, null);
        						} else {
            						texte = case_.getSprite();
       			 }
@@ -112,8 +123,7 @@ public class DemineurPainter implements GamePainter {
 					}
 				} else if (case_.getDrapeau()) {
 					if (imgDrapeau != null) {
-						crayon.drawImage(imgDrapeau, x + 3, y + 3,
-								TAILLE_CASE - 6, TAILLE_CASE - 6, null);
+						crayon.drawImage(imgDrapeau, x + 3, y + 3, null);
 					} else {
 						texte = "F";
 					}
@@ -128,8 +138,7 @@ public class DemineurPainter implements GamePainter {
 		int xc = jeu.getCurseurColonne() * TAILLE_CASE;
 		int yc = HAUTEUR_HEADER + jeu.getCurseurLigne() * TAILLE_CASE;
 		if (imgGilet != null) {
-			crayon.drawImage(imgGilet, xc + 2, yc + 2,
-					TAILLE_CASE - 4, TAILLE_CASE - 4, null);
+			crayon.drawImage(imgGilet, xc + 2, yc + 2, null);
 		} else {
 			// secours : l'ancien contour jaune
 			crayon.setColor(Color.YELLOW);

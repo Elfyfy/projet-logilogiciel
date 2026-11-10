@@ -37,7 +37,9 @@ public class DrawingPanel extends JPanel {
 		BufferedImage temp = this.currentImage;
 		this.currentImage = this.nextImage;
 		this.nextImage = temp;
-		this.nextImage.getGraphics().fillRect(0, 0, this.width, this.height);
+		Graphics2D g = this.nextImage.createGraphics();
+		g.fillRect(0, 0, this.width, this.height);
+		g.dispose();
 		this.repaint();
 	}
 
