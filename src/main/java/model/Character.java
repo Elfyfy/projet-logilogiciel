@@ -22,4 +22,5 @@ public class Character {
     public void setColumn(int c) {this.column = c;}
     public Cmd getDir() {return this.dir;}
     public void setDir(Cmd d) {this.dir = d;}
+    public Sprite[] getSprites() {return this.sprites;}
 }
