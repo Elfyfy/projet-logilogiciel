@@ -6,7 +6,21 @@ Démineur-Labyrinthe: un plateau de 15*25 avec des bombes “classiques” de d�
 
 L'application est développée en Java et utilise Maven pour automatiser la compilation, l'exécution des tests et la génération du fichier JAR.
 
-## 2. Prérequis
+
+## 2. Commandes du jeu
+
+| Touche | Action |
+|---|---|
+| `Z` | Se déplacer vers le haut |
+| `Q` | Se déplacer vers la gauche |
+| `S` | Se déplacer vers le bas |
+| `D` | Se déplacer vers la droite |
+| `F` | Placer ou retirer un drapeau sur une case |
+| `espace` | Creuser une case |
+| `échap` | Quitter |
+
+
+## 3. Prérequis
 
 Les outils suivants sont nécessaires pour compiler et exécuter le projet :
 
@@ -22,7 +36,7 @@ javac -version
 mvn -version
 ```
 
-## 3. Récupération du projet
+## 4. Récupération du projet
 
 Cloner le dépôt Git :
 
@@ -36,7 +50,7 @@ Se placer ensuite dans le dossier du projet :
 cd projet-logilogiciel
 ```
 
-## 4. Compilation
+## 5. Compilation
 
 Pour compiler le projet :
 
@@ -46,7 +60,7 @@ mvn clean compile
 
 Cette commande supprime les fichiers de compilation précédents, puis compile les sources Java.
 
-## 5. Exécution des tests
+## 6. Exécution des tests
 
 Pour compiler et exécuter les tests unitaires :
 
@@ -56,7 +70,7 @@ mvn test
 
 Les tests sont écrits avec JUnit Jupiter.
 
-## 6. Exécution de l'application
+## 7. Exécution de l'application
 
 ### Méthode 1 : avec Maven
 
@@ -78,7 +92,7 @@ Exécuter ensuite l'application :
 java -jar target/ProjetJava-1.0-SNAPSHOT.jar
 ```
 
-## 7. Structure du projet
+## 8. Structure du projet
 
 ```text
 projet-logilogiciel/
@@ -100,7 +114,7 @@ projet-logilogiciel/
 - `docs/` : backlogs, diagrammes UML et comptes rendus des sprints.
 - `README.md` : documentation principale du projet.
 
-## 8. Équipe
+## 9. Équipe
 
 - OROZCO Julien
 - CRANSAC-LORINEAU Nolan
