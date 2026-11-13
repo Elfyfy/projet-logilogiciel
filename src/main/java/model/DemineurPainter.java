@@ -16,12 +16,20 @@ public class DemineurPainter implements GamePainter {
 	private static final int HAUTEUR_HEADER = 35;
 
 	private DemineurGame jeu;
+	private Theme theme;
+	private Flammes flammes;
 	private BufferedImage imgDrapeau;
 	private BufferedImage imgGilet;
 	private BufferedImage imgMine;
 
 	public DemineurPainter(DemineurGame jeu) {
+		this(jeu, Theme.pour(0));
+	}
+
+	public DemineurPainter(DemineurGame jeu, Theme theme) {
 		this.jeu = jeu;
+		this.theme = theme;
+		this.flammes = theme.flammes ? new Flammes() : null;
 		imgDrapeau = redimensionner(chargerImage("/images/flag.png"), TAILLE_CASE - 6);
 		imgGilet = redimensionner(chargerImage("/images/gilet.png"), TAILLE_CASE - 4);
 		imgMine = redimensionner(chargerImage("/images/mine.png"), TAILLE_CASE - 6);
@@ -49,11 +57,12 @@ public class DemineurPainter implements GamePainter {
 
 	@Override
 	public void draw(BufferedImage im) {
+		if (flammes != null) flammes.avancer();
 		Graphics2D crayon = (Graphics2D) im.getGraphics();
 		crayon.setFont(new Font("SansSerif", Font.BOLD, 16));
 
 		// Fond de l'en-tête
-		crayon.setColor(new Color(20, 26, 36));
+		crayon.setColor(theme.entete);
 		crayon.fillRect(0, 0, getWidth(), HAUTEUR_HEADER);
 
 		// Police
@@ -84,29 +93,29 @@ public class DemineurPainter implements GamePainter {
 					}
 					float t = Math.min(voisines, 4) / 4f;
 
-					crayon.setColor(new Color(30, 38, 50));
+					crayon.setColor(theme.bordure);
 					crayon.fillRect(x, y, TAILLE_CASE, TAILLE_CASE);
-					crayon.setColor(melanger(new Color(62, 76, 96), new Color(170, 40, 40), t));
+					crayon.setColor(melanger(theme.videBase, theme.dangerBase, t));
 					crayon.fillRect(x + 2, y + 2, TAILLE_CASE - 4, TAILLE_CASE - 4);
-					crayon.setColor(melanger(new Color(82, 98, 120), new Color(215, 85, 75), t));
+					crayon.setColor(melanger(theme.videClair, theme.dangerClair, t));
 					crayon.fillRect(x + 2, y + 2, TAILLE_CASE - 4, 2);
 					crayon.fillRect(x + 2, y + 2, 2, TAILLE_CASE - 4);
-					crayon.setColor(melanger(new Color(46, 57, 74), new Color(110, 22, 22), t));
+					crayon.setColor(melanger(theme.videSombre, theme.dangerSombre, t));
 					crayon.fillRect(x + 2, y + TAILLE_CASE - 4, TAILLE_CASE - 4, 2);
 					crayon.fillRect(x + TAILLE_CASE - 4, y + 2, 2, TAILLE_CASE - 4);
 				} else {
-					crayon.setColor(new Color(30, 38, 50));
+					crayon.setColor(theme.bordure);
 					crayon.fillRect(x, y, TAILLE_CASE, TAILLE_CASE);
-					crayon.setColor(new Color(78, 122, 134));
+					crayon.setColor(theme.caseBase);
 					crayon.fillRect(x + 2, y + 2, TAILLE_CASE - 4, TAILLE_CASE - 4);
-					crayon.setColor(new Color(108, 156, 168));
+					crayon.setColor(theme.caseClair);
 					crayon.fillRect(x + 2, y + 2, TAILLE_CASE - 4, 2);
 					crayon.fillRect(x + 2, y + 2, 2, TAILLE_CASE - 4);
-					crayon.setColor(new Color(54, 88, 98));
+					crayon.setColor(theme.caseSombre);
 					crayon.fillRect(x + 2, y + TAILLE_CASE - 4, TAILLE_CASE - 4, 2);
 					crayon.fillRect(x + TAILLE_CASE - 4, y + 2, 2, TAILLE_CASE - 4);
 				}
-				crayon.setColor(case_.getDecouvert() ? new Color(225, 232, 240) : new Color(30, 38, 50));
+				crayon.setColor(case_.getDecouvert() ? new Color(225, 232, 240) : theme.bordure);
 				String texte = "";
 
 				if (case_.getDecouvert()) {
@@ -129,7 +138,7 @@ public class DemineurPainter implements GamePainter {
 					}
 				}
 				crayon.drawString(texte, x + 10, y + 21);
-				crayon.setColor(new Color(20, 26, 36));
+				crayon.setColor(theme.entete);
 				crayon.drawRect(x, y, TAILLE_CASE, TAILLE_CASE);
 			}
 		}
@@ -146,6 +155,11 @@ public class DemineurPainter implements GamePainter {
 		}
 		crayon.dispose();
 	}
+	@Override
+	public void dessinerFond(Graphics2D g, int largeurEcran, int hauteurEcran, int xJeu, int largeurJeu) {
+		if (flammes != null) flammes.dessiner(g, largeurEcran, hauteurEcran, xJeu, largeurJeu);
+	}
+
 	private Color melanger(Color a, Color b, float t) {
 		int r = (int) (a.getRed() + (b.getRed() - a.getRed()) * t);
 		int g = (int) (a.getGreen() + (b.getGreen() - a.getGreen()) * t);

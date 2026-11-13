@@ -93,6 +93,17 @@ public class MenuDifficulte extends JDialog {
 		return menu.resultat < 0 ? -1 : menu.nbMines[menu.resultat];
 	}
 
+	public static int choisirNiveau(int lignes, int colonnes) {
+		MenuDifficulte menu = new MenuDifficulte(lignes * colonnes);
+		menu.setVisible(true);
+		menu.minuteur.stop();
+		return menu.resultat;
+	}
+
+	public static int nbMines(int niveau, int lignes, int colonnes) {
+		return Math.max(1, (int) (lignes * colonnes * TAUX[niveau]));
+	}
+
 	private Rectangle bouton(int i) {
 		return new Rectangle((LARGEUR - 320) / 2, 190 + i * 80, 320, 60);
 	}

@@ -72,6 +72,8 @@ public class DrawingPanel extends JPanel {
 		int x = (w - lw) / 2;
 		int y = (h - lh) / 2;
 
+		painter.dessinerFond(g2, w, h, x, lw);
+
 		g2.setColor(new Color(0, 0, 0, 90));
 		g2.fillRect(x + 8, y + 8, lw, lh);
 
