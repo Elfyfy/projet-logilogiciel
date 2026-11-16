@@ -189,7 +189,7 @@ public class DemineurGame implements Game {
 		case FLAG:
 			Case cible = grille[curseurLigne][curseurColonne];
 			if (!cible.getDecouvert()) cible.setDrapeau(); break;
-		default: break;
+		default: break; 
 		case REVEAL:
 			decouvrir(curseurLigne, curseurColonne);
 			break;
