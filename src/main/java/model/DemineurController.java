@@ -14,14 +14,13 @@ public class DemineurController implements GameController {
 		this.commandeEnCours = Cmd.IDLE;
 	}
 
+	@Override
 	public Cmd getCommand() {
-    Cmd commande = this.commandeEnCours;
-
-    if (commande == Cmd.FLAG || commande == Cmd.REVEAL) {
-        this.commandeEnCours = Cmd.IDLE;
-    }
-
-    return commande;
+		Cmd commande = this.commandeEnCours;
+		if (commande == Cmd.FLAG || commande == Cmd.REVEAL) {
+			this.commandeEnCours = Cmd.IDLE;
+		}
+		return commande;
 }
 
 	@Override

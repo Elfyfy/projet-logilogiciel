@@ -193,8 +193,6 @@ public class DemineurGame implements Game {
 		case REVEAL:
 			decouvrir(curseurLigne, curseurColonne);
 			break;
-		case GAME_OVER:
-			break;
 		}
 	}
 
