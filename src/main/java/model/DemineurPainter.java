@@ -157,8 +157,82 @@ public class DemineurPainter implements GamePainter {
 			crayon.setColor(Color.YELLOW);
 			crayon.drawRect(xc + 1, yc + 1, TAILLE_CASE - 2, TAILLE_CASE - 2);
 		}
+
+		// AJOUT : explosion puis menu de fin
+		if (jeu.getIsOver()) {
+			long ecoule = System.currentTimeMillis() - jeu.getTempsDefaite();
+			dessinerExplosion(crayon, ecoule);
+			if (ecoule > 900) dessinerMenuFin(crayon);
+		}
+
 		crayon.dispose();
 	}
+
+	// AJOUT : explosion qui part de la case piégée
+	private void dessinerExplosion(Graphics2D g, long ecoule) {
+		float p = Math.min(1f, ecoule / 900f);
+		int cx = jeu.getColonneExplosion() * TAILLE_CASE + TAILLE_CASE / 2;
+		int cy = HAUTEUR_HEADER + jeu.getLigneExplosion() * TAILLE_CASE + TAILLE_CASE / 2;
+		int rMax = Math.max(getWidth(), getHeight());
+		int alpha = (int) (200 * (1 - p * 0.6f));
+
+		Color[] couleurs = {
+			new Color(200, 40, 20, alpha),
+			new Color(255, 140, 0, alpha),
+			new Color(255, 230, 80, alpha),
+			new Color(255, 255, 255, alpha)
+		};
+		float[] echelles = {1.0f, 0.7f, 0.45f, 0.2f};
+
+		for (int i = 0; i < couleurs.length; i++) {
+			int r = (int) (rMax * p * echelles[i]);
+			g.setColor(couleurs[i]);
+			g.fillOval(cx - r, cy - r, 2 * r, 2 * r);
+		}
+
+		// Étincelles
+		g.setColor(new Color(255, 220, 100, alpha));
+		for (int i = 0; i < 12; i++) {
+			double angle = i * Math.PI / 6;
+			int r1 = (int) (rMax * p * 0.5);
+			int r2 = (int) (rMax * p * 0.9);
+			g.drawLine(cx + (int) (Math.cos(angle) * r1), cy + (int) (Math.sin(angle) * r1),
+					cx + (int) (Math.cos(angle) * r2), cy + (int) (Math.sin(angle) * r2));
+		}
+	}
+
+	// AJOUT : menu "Partie perdue"
+	private void dessinerMenuFin(Graphics2D g) {
+		g.setColor(new Color(0, 0, 0, 170));
+		g.fillRect(0, 0, getWidth(), getHeight());
+
+		int w = Math.min(getWidth() - 20, 260);
+		int h = 130;
+		int x = (getWidth() - w) / 2;
+		int y = (getHeight() - h) / 2;
+
+		g.setColor(new Color(30, 38, 50));
+		g.fillRoundRect(x, y, w, h, 16, 16);
+		g.setColor(new Color(215, 85, 75));
+		g.drawRoundRect(x, y, w, h, 16, 16);
+
+		g.setFont(new Font("SansSerif", Font.BOLD, 22));
+		g.setColor(new Color(255, 140, 0));
+		texteCentre(g, "BOOM !", y + 40);
+
+		g.setFont(new Font("SansSerif", Font.PLAIN, 14));
+		g.setColor(Color.WHITE);
+		texteCentre(g, "Partie perdue", y + 65);
+		texteCentre(g, "R : rejouer", y + 92);
+		texteCentre(g, "Échap : quitter", y + 112);
+	}
+
+	// AJOUT
+	private void texteCentre(Graphics2D g, String texte, int y) {
+		int largeur = g.getFontMetrics().stringWidth(texte);
+		g.drawString(texte, (getWidth() - largeur) / 2, y);
+	}
+
 	@Override
 	public void dessinerFond(Graphics2D g, int largeurEcran, int hauteurEcran, int xJeu, int largeurJeu) {
 		if (flammes != null) flammes.dessiner(g, largeurEcran, hauteurEcran, xJeu, largeurJeu);

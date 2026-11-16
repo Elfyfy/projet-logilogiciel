@@ -13,15 +13,27 @@ public class DemineurGame implements Game {
 	private int curseurLigne = 0;
 	private int curseurColonne = 0;
 	private int nbMines; 
-	private Chronometre chronometre = new Chronometre();
+	private Chronometre chronometre; // MODIF : créé dans initialiser()
 	private Bomb[] bombes;
 	private boolean isOver;
+
+	// AJOUT : infos pour l'explosion
+	private long tempsDefaite;
+	private int ligneExplosion, colonneExplosion;
 
 	public DemineurGame(int lignes, int colonnes, int nbMines) {
 		this.lignes = lignes;
 		this.colonnes = colonnes;
-		this.grille = new Case[lignes][colonnes];
 		this.nbMines = nbMines;
+		initialiser(); // MODIF : tout le reste est déplacé dans initialiser()
+	}
+
+	// AJOUT : (ré)initialise la partie, utilisée au démarrage et pour rejouer
+	private void initialiser() {
+		this.grille = new Case[lignes][colonnes];
+		this.curseurLigne = 0;
+		this.curseurColonne = 0;
+		this.chronometre = new Chronometre();
 		this.bombes = new Bomb[1];
 		this.bombes[0] = new Bomb(lignes,colonnes,null,1,null);
 		this.isOver = false;
@@ -29,6 +41,11 @@ public class DemineurGame implements Game {
 		placerMines(nbMines,0,0); //pt de départ du joueur.euse
 		creerCasesLibres();
 		calculerVoisines();
+	}
+
+	// AJOUT
+	public void rejouer() {
+		initialiser();
 	}
 
 	private int abs(int z){if(z<0){return abs(-z);};return z;}
@@ -134,8 +151,9 @@ public class DemineurGame implements Game {
 		if (l < 0 || l >= lignes || c < 0 || c >= colonnes) return;
 
 		Case cible = grille[l][c];
+		if (cible.getDrapeau()) return; // AJOUT : une case avec drapeau ne se révèle pas
 		if (cible instanceof CaseMinee) {
-			this.setIsOver();
+			declencherDefaite(l, c); // MODIF : remplace this.setIsOver()
 		}
 		else {
 			if (cible.getDecouvert() || cible.getDrapeau()) return;
@@ -153,7 +171,19 @@ public class DemineurGame implements Game {
 			}
 		}
 	}
-		
+
+	// AJOUT : défaite = on mémorise où et quand, puis on révèle toutes les mines
+	private void declencherDefaite(int l, int c) {
+		isOver = true;
+		tempsDefaite = System.currentTimeMillis();
+		ligneExplosion = l;
+		colonneExplosion = c;
+		for (int i = 0; i < lignes; i++) {
+			for (int j = 0; j < colonnes; j++) {
+				if (grille[i][j] instanceof CaseMinee) grille[i][j].setDecouvert();
+			}
+		}
+	}
 
 	private int NbDrapeaux() {
 		int compteur = 0;
@@ -180,11 +210,20 @@ public class DemineurGame implements Game {
 	public Bomb[] getBomb() {return this.bombes;}
 	public int getNbBombes() {return this.bombes.length;}
 	public boolean getIsOver() {return this.isOver;}
+	// AJOUT
+	public long getTempsDefaite() { return tempsDefaite; }
+	public int getLigneExplosion() { return ligneExplosion; }
+	public int getColonneExplosion() { return colonneExplosion; }
 	
 	public void setIsOver() {this.isOver = true;}
 	
 	@Override
 	public void evolve(Cmd cmd) {
+		// AJOUT : une fois perdu, seule la touche "rejouer" fait quelque chose
+		if (isOver) {
+			if (cmd == Cmd.REJOUER) rejouer();
+			return;
+		}
 		switch (cmd) {
 		case UP:    if (curseurLigne > 0) curseurLigne--; break;
 		case DOWN:  if (curseurLigne < lignes - 1) curseurLigne++; break;
@@ -203,7 +242,7 @@ public class DemineurGame implements Game {
 	@Override
 	public boolean isFinished() {
 		if (this.isOver) {
-			return true;
+			return false; // MODIF : on reste affiché pour l'explosion et le menu
 		} else {
 			for (int i = 0; i < this.bombes.length; i++) {
 				Bomb bombe = this.bombes[i];

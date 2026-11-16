@@ -17,7 +17,8 @@ public class DemineurController implements GameController {
 	@Override
 	public Cmd getCommand() {
 		Cmd commande = this.commandeEnCours;
-		if (commande == Cmd.FLAG || commande == Cmd.REVEAL) {
+		// MODIF : REJOUER est aussi consommée une seule fois
+		if (commande == Cmd.FLAG || commande == Cmd.REVEAL || commande == Cmd.REJOUER) {
 			this.commandeEnCours = Cmd.IDLE;
 		}
 		return commande;
@@ -25,6 +26,11 @@ public class DemineurController implements GameController {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
+
+		// AJOUT : Échap quitte le jeu
+		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+			System.exit(0);
+		}
 
 		switch (e.getKeyChar()) {
 		case 'z':
@@ -44,6 +50,9 @@ public class DemineurController implements GameController {
 			break;
 		case ' ':
 			this.commandeEnCours = Cmd.REVEAL;
+			break;
+		case 'r': // AJOUT
+			this.commandeEnCours = Cmd.REJOUER;
 			break;
 			}
 
