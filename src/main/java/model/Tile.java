@@ -27,4 +27,5 @@ public class Tile {
     public void setUnknown(boolean b) {this.unknown = b;}
     public boolean getPinned() {return this.pinned;}
     public void setPinned(boolean b) {this.pinned = b;}
+    public Sprite[] getSprites() {return this.sprites;}
 }

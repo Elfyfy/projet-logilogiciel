@@ -14,12 +14,17 @@ public class DemineurGame implements Game {
 	private int curseurColonne = 0;
 	private int nbMines; 
 	private Chronometre chronometre = new Chronometre();
+	private Bomb[] bombes;
+	private boolean isOver;
 
 	public DemineurGame(int lignes, int colonnes, int nbMines) {
 		this.lignes = lignes;
 		this.colonnes = colonnes;
 		this.grille = new Case[lignes][colonnes];
 		this.nbMines = nbMines;
+		this.bombes = new Bomb[1];
+		this.bombes[0] = new Bomb(lignes,colonnes,null,1,null);
+		this.isOver = false;
 
 		placerMines(nbMines,0,0); //pt de départ du joueur.euse
 		creerCasesLibres();
@@ -45,41 +50,52 @@ public class DemineurGame implements Game {
 				int nc = c + dc;
 				if (isDefined(nl,nc) && (verif[nl][nc][0]==k)) {count++;}}}
 		return count;} //nb d'élément(s) k autour de la case (i,j)
+	//non-testée correctement
+	private int UnkAround(int l,int c,int[][][] verif){return KAround(0,l,c,verif);}
+	private int PndAround(int l,int c,int[][][] verif){return KAround(1,l,c,verif);}
+//	private int SptAround(int l,int c,int[][][] verif){return KAround(2,l,c,verif);}
 
+//	private void KBetween(int k,int l1,int c1,int l2,int c2,int[][][] verif){}
 	private void placerMines(int nbMines,int lDep,int cDep) {
 		boolean keep=true;
 		while (keep) {
 			Random alea = new Random();
 			int posees = 0;
-			int[][][] verif=new int[lignes][colonnes][3];
+			int[][][] verif=new int[lignes][colonnes][4];
 			// 0:unknown, 1:pinned, 2:swept
-			//verif[i][j]: [état de la case (i,j) à l'étape de vérification n; à l'étape n-1,nb de mines autour]
+			//verif[i][j]: [état de (i,j) à l'étape n; à l'étape n-1,nb de mines autour,a une mine]
 			verif[lDep][cDep][0]=2;
 			while (posees < nbMines) {
 				int l = alea.nextInt(lignes);
 				int c = alea.nextInt(colonnes);
 				if((abs(l-lDep)<2)&&(abs(c-cDep)<2)) continue;
-				if (grille[l][c] == null) {
-					grille[l][c] = new CaseMinee(c, l);
+				if (verif[l][c][3]==0) {
+					verif[l][c][3]=1;
 					posees++;
-					verif[l][c][2]++;}}
+					for (int dl = -1; dl <= 1; dl++) {
+						for (int dc = -1; dc <= 1; dc++) {
+							if (dl == 0 && dc == 0) continue;
+							if (isDefined(l+dl,c+dc)) {verif[l][c][2]++;}}} } }
 			while (changed(verif)){
 				for(int l=0;l<lignes;l++){for(int c=0;c<colonnes;c++){verif[l][c][1]=verif[l][c][0];}}
 				for(int l=0;l<lignes;l++){
 					for(int c=0;c<colonnes;c++){
+						if(verif[l][c][0]!=2)continue;
 						////si nb pinned = nb mines indiquées, on peut draguer ce qui est draguable
-						if(KAround(1,l,c,verif)==verif[l][c][2]){
+						if(PndAround(l,c,verif)==verif[l][c][2]){
 							for(int i=l-1;i<l+2;i++){ 
 								for(int j=c-1;j<c+2;j++){
 									if(isDefined(i,j)&&(verif[i][j][0]==0)){verif[i][j][0]=2;}}}}
 						////si nb unknown = nb mines indiquées, on peut tout pin
-						if(KAround(0,l,c,verif)==verif[l][c][2]){
+						if(UnkAround(l,c,verif)==verif[l][c][2]){
 							for(int i=l-1;i<l+2;i++){ 
 								for(int j=c-1;j<c+2;j++){
 									if(isDefined(i,j)&&(verif[i][j][0]==0)){verif[i][j][0]=1;}}}} }} }
 			keep=false; //s'il reste une case unknown, les mines sont mal placées, et on continue
 			for(int l=0;l<lignes;l++){for(int c=0;c<colonnes;c++){if(verif[l][c][0]==0){keep=true;}}}
-		}
+		if(keep==false){
+			for(int l=0;l<lignes;l++){for(int c=0;c<colonnes;c++){
+				if(verif[l][c][3]==1){grille[l][c]=new CaseMinee(c,l);}}} } }
 	}
 
 	// Toutes les cases encore vides deviennent des CaseLibre
@@ -114,43 +130,30 @@ public class DemineurGame implements Game {
 		}
 	}
 
-	private void calculerFlag() {
-		for (int l = 0; l < lignes; l++) {
-			for (int c = 0; c < colonnes; c++) {
-				if (!(grille[l][c] instanceof CaseLibre)) continue;
+	private void decouvrir(int l, int c) {
+		if (l < 0 || l >= lignes || c < 0 || c >= colonnes) return;
 
-				int compteur = 0;
+		Case cible = grille[l][c];
+		if (cible instanceof CaseMinee) {
+			this.setIsOver();
+		}
+		else {
+			if (cible.getDecouvert() || cible.getDrapeau()) return;
+
+			chronometre.demarrer();
+
+			cible.setDecouvert();
+
+			if (cible instanceof CaseLibre && ((CaseLibre) cible).getNMines() == 0) {
 				for (int dl = -1; dl <= 1; dl++) {
 					for (int dc = -1; dc <= 1; dc++) {
-						if (dl == 0 && dc == 0) continue;
-						int nl = l + dl;
-						int nc = c + dc;
-						boolean dansLaGrille = nl >= 0 && nl < lignes && nc >= 0 && nc < colonnes;
-						if (dansLaGrille && grille[nl][nc] instanceof CaseMinee) {
-							compteur++;
-						}
+						if (dl != 0 || dc != 0) decouvrir(l + dl, c + dc);
 					}
 				}
-				((CaseLibre) grille[l][c]).setNMines(compteur);
 			}
 		}
 	}
-	private void decouvrir(int l, int c) {
-	if (l < 0 || l >= lignes || c < 0 || c >= colonnes) return;
-	Case cible = grille[l][c];
-	if (cible.getDecouvert() || cible.getDrapeau()) return;
-
-	chronometre.demarrer();
-
-	cible.setDecouvert();
-
-	if (cible instanceof CaseLibre && ((CaseLibre) cible).getNMines() == 0) {
-		for (int dl = -1; dl <= 1; dl++) {
-			for (int dc = -1; dc <= 1; dc++) {
-				if (dl != 0 || dc != 0) decouvrir(l + dl, c + dc);}
-			}
-		}
-	}
+		
 
 	private int NbDrapeaux() {
 		int compteur = 0;
@@ -174,7 +177,11 @@ public class DemineurGame implements Game {
 	public int getNbMines() { return nbMines; }
 	public int getMinesRestantes() { return nbMines - getNbDrapeaux(); }
 	public int getNbDrapeaux() { return NbDrapeaux(); }
-
+	public Bomb[] getBomb() {return this.bombes;}
+	public int getNbBombes() {return this.bombes.length;}
+	public boolean getIsOver() {return this.isOver;}
+	
+	public void setIsOver() {this.isOver = true;}
 	
 	@Override
 	public void evolve(Cmd cmd) {
@@ -184,18 +191,26 @@ public class DemineurGame implements Game {
 		case LEFT:  if (curseurColonne > 0) curseurColonne--; break;
 		case RIGHT: if (curseurColonne < colonnes - 1) curseurColonne++; break;
 		case FLAG:
-			grille[curseurLigne][curseurColonne].setDrapeau();
-			break;
-		default: break;
+			Case cible = grille[curseurLigne][curseurColonne];
+			if (!cible.getDecouvert()) cible.setDrapeau(); break;
+		default: break; 
 		case REVEAL:
-		decouvrir(curseurLigne, curseurColonne);
-		break;
+			decouvrir(curseurLigne, curseurColonne);
+			break;
 		}
 	}
 
 	@Override
 	public boolean isFinished() {
-		return false;
+		if (this.isOver) {
+			return true;
+		} else {
+			for (int i = 0; i < this.bombes.length; i++) {
+				Bomb bombe = this.bombes[i];
+				if (!bombe.getBlown()) {return false;}
+			} return true;
+		}
+		
 	}
 }
 
