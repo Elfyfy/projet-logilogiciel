@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.awt.AlphaComposite;
+
 
 import javax.imageio.ImageIO;
 
@@ -124,14 +126,16 @@ public class DemineurPainter implements GamePainter {
 			}
 		}
 
+	
 		// Curseur dessiné en dernier : il passe par-dessus les drapeaux
 		int xc = jeu.getCurseurColonne() * TAILLE_CASE;
 		int yc = HAUTEUR_HEADER + jeu.getCurseurLigne() * TAILLE_CASE;
 		if (imgGilet != null) {
-			crayon.drawImage(imgGilet, xc + 2, yc + 2,
-					TAILLE_CASE - 4, TAILLE_CASE - 4, null);
+			crayon.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
+			crayon.drawImage(imgGilet, xc + 6, yc + 6,
+					TAILLE_CASE - 12, TAILLE_CASE - 12, null);
+			crayon.setComposite(AlphaComposite.SrcOver);
 		} else {
-			// secours : l'ancien contour jaune
 			crayon.setColor(Color.YELLOW);
 			crayon.drawRect(xc + 1, yc + 1, TAILLE_CASE - 2, TAILLE_CASE - 2);
 		}

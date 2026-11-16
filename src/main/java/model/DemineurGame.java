@@ -198,3 +198,4 @@ public class DemineurGame implements Game {
 		return false;
 	}
 }
+
