@@ -14,7 +14,8 @@ public class DemineurGame implements Game {
 	private int curseurColonne = 0;
 	private int nbMines; 
 	private Chronometre chronometre = new Chronometre();
-	private Bomb[] bombes; 
+	private Bomb[] bombes;
+	private boolean isOver;
 
 	public DemineurGame(int lignes, int colonnes, int nbMines) {
 		this.lignes = lignes;
@@ -23,6 +24,7 @@ public class DemineurGame implements Game {
 		this.nbMines = nbMines;
 		this.bombes = new Bomb[1];
 		this.bombes[0] = new Bomb(lignes,colonnes,null,1,null);
+		this.isOver = false;
 
 		placerMines(nbMines,0,0); //pt de départ du joueur.euse
 		creerCasesLibres();
@@ -133,7 +135,7 @@ public class DemineurGame implements Game {
 
 		Case cible = grille[l][c];
 		if (cible instanceof CaseMinee) {
-			// gameOver
+			this.setIsOver();
 		}
 		else {
 			if (cible.getDecouvert() || cible.getDrapeau()) return;
@@ -177,7 +179,9 @@ public class DemineurGame implements Game {
 	public int getNbDrapeaux() { return NbDrapeaux(); }
 	public Bomb[] getBomb() {return this.bombes;}
 	public int getNbBombes() {return this.bombes.length;}
-
+	public boolean getIsOver() {return this.isOver;}
+	
+	public void setIsOver() {this.isOver = true;}
 	
 	@Override
 	public void evolve(Cmd cmd) {
@@ -193,19 +197,19 @@ public class DemineurGame implements Game {
 		case REVEAL:
 			decouvrir(curseurLigne, curseurColonne);
 			break;
-		case GAME_OVER:
-			break;
 		}
 	}
 
 	@Override
 	public boolean isFinished() {
-		for (int i = 0; i < this.bombes.length; i++) {
-			Bomb bombe = this.bombes[i];
-			if (!bombe.getBlown()) {return false;}
-		} return true;
-	}
-
-	public void gameOver() {
+		if (this.isOver) {
+			return true;
+		} else {
+			for (int i = 0; i < this.bombes.length; i++) {
+				Bomb bombe = this.bombes[i];
+				if (!bombe.getBlown()) {return false;}
+			} return true;
+		}
+		
 	}
 }
