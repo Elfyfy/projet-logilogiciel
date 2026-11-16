@@ -179,8 +179,8 @@ public class DemineurGame implements Game {
 		case LEFT:  if (curseurColonne > 0) curseurColonne--; break;
 		case RIGHT: if (curseurColonne < colonnes - 1) curseurColonne++; break;
 		case FLAG:
-			grille[curseurLigne][curseurColonne].setDrapeau();
-			break;
+			Case cible = grille[curseurLigne][curseurColonne];
+			if (!cible.getDecouvert()) cible.setDrapeau(); break;
 		default: break;
 		case REVEAL:
 		decouvrir(curseurLigne, curseurColonne);
