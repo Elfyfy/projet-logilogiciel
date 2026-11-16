@@ -135,19 +135,23 @@ public class DemineurGame implements Game {
 		if (cible instanceof CaseMinee) {
 			// gameOver
 		}
-		if (cible.getDecouvert() || cible.getDrapeau()) return;
+		else {
+			if (cible.getDecouvert() || cible.getDrapeau()) return;
 
-		chronometre.demarrer();
+			chronometre.demarrer();
 
-		cible.setDecouvert();
+			cible.setDecouvert();
 
-		if (cible instanceof CaseLibre && ((CaseLibre) cible).getNMines() == 0) {
-			for (int dl = -1; dl <= 1; dl++) {
-				for (int dc = -1; dc <= 1; dc++) {
-					if (dl != 0 || dc != 0) decouvrir(l + dl, c + dc);}
+			if (cible instanceof CaseLibre && ((CaseLibre) cible).getNMines() == 0) {
+				for (int dl = -1; dl <= 1; dl++) {
+					for (int dc = -1; dc <= 1; dc++) {
+						if (dl != 0 || dc != 0) decouvrir(l + dl, c + dc);
+					}
 				}
 			}
 		}
+	}
+		
 
 	private int NbDrapeaux() {
 		int compteur = 0;
