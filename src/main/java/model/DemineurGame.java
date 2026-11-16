@@ -129,21 +129,29 @@ public class DemineurGame implements Game {
 	}
 
 	private void decouvrir(int l, int c) {
-	if (l < 0 || l >= lignes || c < 0 || c >= colonnes) return;
-	Case cible = grille[l][c];
-	if (cible.getDecouvert() || cible.getDrapeau()) return;
+		if (l < 0 || l >= lignes || c < 0 || c >= colonnes) return;
 
-	chronometre.demarrer();
+		Case cible = grille[l][c];
+		if (cible instanceof CaseMinee) {
+			// gameOver
+		}
+		else {
+			if (cible.getDecouvert() || cible.getDrapeau()) return;
 
-	cible.setDecouvert();
+			chronometre.demarrer();
 
-	if (cible instanceof CaseLibre && ((CaseLibre) cible).getNMines() == 0) {
-		for (int dl = -1; dl <= 1; dl++) {
-			for (int dc = -1; dc <= 1; dc++) {
-				if (dl != 0 || dc != 0) decouvrir(l + dl, c + dc);}
+			cible.setDecouvert();
+
+			if (cible instanceof CaseLibre && ((CaseLibre) cible).getNMines() == 0) {
+				for (int dl = -1; dl <= 1; dl++) {
+					for (int dc = -1; dc <= 1; dc++) {
+						if (dl != 0 || dc != 0) decouvrir(l + dl, c + dc);
+					}
+				}
 			}
 		}
 	}
+		
 
 	private int NbDrapeaux() {
 		int compteur = 0;
@@ -183,8 +191,10 @@ public class DemineurGame implements Game {
 			if (!cible.getDecouvert()) cible.setDrapeau(); break;
 		default: break;
 		case REVEAL:
-		decouvrir(curseurLigne, curseurColonne);
-		break;
+			decouvrir(curseurLigne, curseurColonne);
+			break;
+		case GAME_OVER:
+			break;
 		}
 	}
 
@@ -194,5 +204,8 @@ public class DemineurGame implements Game {
 			Bomb bombe = this.bombes[i];
 			if (!bombe.getBlown()) {return false;}
 		} return true;
+	}
+
+	public void gameOver() {
 	}
 }
