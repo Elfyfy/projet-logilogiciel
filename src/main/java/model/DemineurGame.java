@@ -16,6 +16,7 @@ public class DemineurGame implements Game {
 	private Chronometre chronometre; // MODIF : créé dans initialiser()
 	private Bomb[] bombes;
 	private boolean isOver;
+	private Character hero;
 
 	// AJOUT : infos pour l'explosion
 	private long tempsDefaite;
@@ -37,6 +38,7 @@ public class DemineurGame implements Game {
 		this.bombes = new Bomb[1];
 		this.bombes[0] = new Bomb(lignes,colonnes,null,1,null);
 		this.isOver = false;
+		this.hero = new Character(this.curseurLigne,this.curseurColonne,null);
 
 		placerMines(nbMines,0,0); //pt de départ du joueur.euse
 		creerCasesLibres();
@@ -210,6 +212,7 @@ public class DemineurGame implements Game {
 	public Bomb[] getBomb() {return this.bombes;}
 	public int getNbBombes() {return this.bombes.length;}
 	public boolean getIsOver() {return this.isOver;}
+	public Character getHero() {return this.hero;}
 	// AJOUT
 	public long getTempsDefaite() { return tempsDefaite; }
 	public int getLigneExplosion() { return ligneExplosion; }
