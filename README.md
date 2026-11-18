@@ -92,27 +92,88 @@ Exécuter ensuite l'application :
 java -jar target/ProjetJava-1.0-SNAPSHOT.jar
 ```
 
-## 8. Structure du projet
+## 8. Structure actuelle du projet
 
-```text
 projet-logilogiciel/
 ├── pom.xml
 ├── README.md
-├── docs/
-│   ├── sprint-1/
-│   └── sprint-2/
 └── src/
     ├── main/
-    │   └── java/
+    │   ├── java/
+    │   │   ├── docs/
+    │   │   │   ├── sprint-1/
+    │   │   │   │   ├── conception/
+    │   │   │   │   │   ├── diagramme-classes.png
+    │   │   │   │   │   └── diagramme-sequence.puml
+    │   │   │   │   ├── backlog1.md
+    │   │   │   │   ├── sprint-retrospective1.md
+    │   │   │   │   └── sprint-review1.md
+    │   │   │   ├── sprint-2/
+    │   │   │   │   ├── backlog2.md
+    │   │   │   │   ├── sprint-retrospective2.md
+    │   │   │   │   └── sprint-review2.md
+    │   │   │   └── sprint-3/
+    │   │   │       └── backlog3.md
+    │   │   ├── engine/
+    │   │   │   ├── Cmd.java
+    │   │   │   ├── DrawingPanel.java
+    │   │   │   ├── Game.java
+    │   │   │   ├── GameController.java
+    │   │   │   ├── GameEngineGraphical.java
+    │   │   │   ├── GamePainter.java
+    │   │   │   └── GraphicalInterface.java
+    │   │   ├── model/
+    │   │   │   ├── Bomb.java
+    │   │   │   ├── Case.java
+    │   │   │   ├── CaseLibre.java
+    │   │   │   ├── CaseMinee.java
+    │   │   │   ├── Character.java
+    │   │   │   ├── Chronometre.java
+    │   │   │   ├── Commandes.java
+    │   │   │   ├── DemineurController.java
+    │   │   │   ├── DemineurGame.java
+    │   │   │   ├── DemineurPainter.java
+    │   │   │   ├── Empty.java
+    │   │   │   ├── Flammes.java
+    │   │   │   ├── Mine.java
+    │   │   │   ├── Sprite.java
+    │   │   │   ├── Theme.java
+    │   │   │   ├── Tile.java
+    │   │   │   └── Wall.java
+    │   │   ├── start/
+    │   │   │   └── Main.java
+    │   │   └── view/
+    │   │       ├── MenuDifficulte.java
+    │   │       └── MenuPrincipal.java
+    │   └── resources/
+    │       └── images/
+    │           ├── flag.png
+    │           ├── gilet.png
+    │           ├── lgbt2.png
+    │           ├── menu_fond.png
+    │           └── mine.png
     └── test/
         └── java/
-```
+            └── model/
+                ├── CaseLibreTest.java
+                ├── CaseMineeTest.java
+                ├── CaseTest.java
+                ├── ChronometreTest.java
+                ├── DemineurControllerTest.java
+                ├── DemineurGameTest.java
+                └── DemineurPainterTest.java
 
-- `pom.xml` : configuration Maven et dépendances.
-- `src/main/java/` : code source de l'application.
-- `src/test/java/` : tests unitaires.
-- `docs/` : backlogs, diagrammes UML et comptes rendus des sprints.
-- `README.md` : documentation principale du projet.
+### Rôle des principaux dossiers
+
+- src/main/java/engine/ : moteur et infrastructure du jeu, gestion des commandes, du contrôleur, de l'affichage et de l'interface graphique.
+- src/main/java/model/ : éléments du modèle et règles du jeu (cases, mines, bombes, personnage, chronomètre, plateau et rendu associé).
+- src/main/java/view/ : écrans et menus de l'application.
+- src/main/java/start/ : point d'entrée de l'application (Main.java).
+- src/main/java/docs/ : documentation du projet organisée par sprint : backlogs, rétrospectives, reviews et documents de conception.
+- src/main/resources/images/ : ressources graphiques utilisées par l'application.
+- src/test/java/model/ : tests unitaires des classes du modèle et des composants associés.
+- pom.xml : configuration Maven du projet et de ses dépendances.
+
 
 ## 9. Équipe
 
