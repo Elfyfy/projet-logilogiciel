@@ -65,65 +65,61 @@ public class DemineurGame implements Game {
 	// vérifie que la case l,c est valide dans la grille de jeu
 
 	private boolean changed(int[][][] verif){
-		for(int l=0;l<lignes;l++){for(int c=0;c<colonnes;c++){if(verif[l][c][0]!=verif[l][c][1]){return true;}}
+		for(int l=0;l<lignes;l++){for(int c=0;c<colonnes;c++){
+			if(verif[l][c][0]!=verif[l][c][1]){return true;}}
 		};return false;} //vérifie si verif a été modifiée lors de l'étape de vérification courante
 
 	private int KAround(int k,int l,int c,int[][][] verif){
 		int count=0;
-		for (int dl = -1; dl <= 1; dl++) {
-			for (int dc = -1; dc <= 1; dc++) {
-				if (dl == 0 && dc == 0) continue;
-				int nl = l + dl;
-				int nc = c + dc;
-				if (isDefined(nl,nc) && (verif[nl][nc][0]==k)) {count++;}}}
-		return count;} //nb d'élément(s) k autour de la case (i,j)
+		for(int i=l-1;i<l+2;i++){for(int j=c-1;j<c+2;j++) {
+				if((100*i+j!=100*l+c)&&isDefined(i,j)&&(verif[i][j][0]==k)){count++;}}}
+		return count;} //nb d'élément(s) k autour de la case (l,c)
 	//non-testée correctement
+
 	private int UnkAround(int l,int c,int[][][] verif){return KAround(0,l,c,verif);}
 	private int PndAround(int l,int c,int[][][] verif){return KAround(1,l,c,verif);}
 //	private int SptAround(int l,int c,int[][][] verif){return KAround(2,l,c,verif);}
 
 //	private void KBetween(int k,int l1,int c1,int l2,int c2,int[][][] verif){}
+	private void sprint(int[][][] verif){
+		System.out.print('\n');
+		for(int l=0;l<lignes;l++){
+				for(int c=0;c<colonnes;c++){
+					System.out.print(verif[l][c][0]);}
+				System.out.print('\n');}}
+
 	private void placerMines(int nbMines,int lDep,int cDep) {
-		boolean keep=true;
-		while (keep) {
-			Random alea = new Random();
-			int posees = 0;
-			int[][][] verif=new int[lignes][colonnes][4];
-			// 0:unknown, 1:pinned, 2:swept
-			//verif[i][j]: [état de (i,j) à l'étape n; à l'étape n-1,nb de mines autour,a une mine]
-			verif[lDep][cDep][0]=2;
-			while (posees < nbMines) {
-				int l = alea.nextInt(lignes);
-				int c = alea.nextInt(colonnes);
+		boolean keep=true;Random alea=new Random();
+		int posees;int[][][] verif;
+		while(keep){
+			posees=0;verif=new int[lignes][colonnes][4];boolean change=true;
+			verif[lDep][cDep][0]=2;//démarrer par un zéro
+			while(posees<nbMines){
+				int l=alea.nextInt(lignes);int c=alea.nextInt(colonnes);
 				if((abs(l-lDep)<2)&&(abs(c-cDep)<2)) continue;
-				if (verif[l][c][3]==0) {
-					verif[l][c][3]=1;
+				if(verif[l][c][3]==0){
+					verif[l][c][3]=1;//présence d'une mine
 					posees++;
-					for (int dl = -1; dl <= 1; dl++) {
-						for (int dc = -1; dc <= 1; dc++) {
-							if (dl == 0 && dc == 0) continue;
-							if (isDefined(l+dl,c+dc)) {verif[l][c][2]++;}}} } }
-			while (changed(verif)){
-				for(int l=0;l<lignes;l++){for(int c=0;c<colonnes;c++){verif[l][c][1]=verif[l][c][0];}}
-				for(int l=0;l<lignes;l++){
-					for(int c=0;c<colonnes;c++){
-						if(verif[l][c][0]!=2)continue;
-						////si nb pinned = nb mines indiquées, on peut draguer ce qui est draguable
+					for(int i=l-1;i<l+2;i++){for(int j=c-1;j<c+2;j++){
+						if((100*i+j!=100*l+c)&&isDefined(i,j)){verif[i][j][2]++;}}} } }
+			while(change){
+				//for(int l=0;l<lignes;l++){for(int c=0;c<colonnes;c++){verif[l][c][1]=verif[l][c][0];}}
+				change=false;
+				for(int l=0;l<lignes;l++){for(int c=0;c<colonnes;c++){
+					if(verif[l][c][0]==2){
 						if(PndAround(l,c,verif)==verif[l][c][2]){
-							for(int i=l-1;i<l+2;i++){ 
-								for(int j=c-1;j<c+2;j++){
-									if(isDefined(i,j)&&(verif[i][j][0]==0)){verif[i][j][0]=2;}}}}
-						////si nb unknown = nb mines indiquées, on peut tout pin
-						if(UnkAround(l,c,verif)==verif[l][c][2]){
-							for(int i=l-1;i<l+2;i++){ 
-								for(int j=c-1;j<c+2;j++){
-									if(isDefined(i,j)&&(verif[i][j][0]==0)){verif[i][j][0]=1;}}}} }} }
+							for(int i=l-1;i<l+2;i++){for(int j=c-1;j<c+2;j++){
+								if(isDefined(i,j)&&(verif[i][j][0]==0)){
+									verif[i][j][0]=2;change=true;}}} }
+						else if(UnkAround(l,c,verif)==verif[l][c][2]){
+							for(int i=l-1;i<l+2;i++){for(int j=c-1;j<c+2;j++){
+								if(isDefined(i,j)&&(verif[i][j][0]==0)){
+									verif[i][j][0]=1;change=true;}}} } }} } }
 			keep=false; //s'il reste une case unknown, les mines sont mal placées, et on continue
 			for(int l=0;l<lignes;l++){for(int c=0;c<colonnes;c++){if(verif[l][c][0]==0){keep=true;}}}
-		if(keep==false){
-			for(int l=0;l<lignes;l++){for(int c=0;c<colonnes;c++){
-				if(verif[l][c][3]==1){grille[l][c]=new CaseMinee(c,l);}}} } }
-	}
+			if(keep==false){
+				for(int l=0;l<lignes;l++){for(int c=0;c<colonnes;c++){
+					if(verif[l][c][3]==1){grille[l][c]=new CaseMinee(c,l);}}} } } }
 
 	// Toutes les cases encore vides deviennent des CaseLibre
 	private void creerCasesLibres() {
