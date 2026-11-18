@@ -38,7 +38,8 @@ public class DemineurGame implements Game {
 		this.bombes = new Bomb[1];
 		this.bombes[0] = new Bomb(lignes,colonnes,null,1,null);
 		this.isOver = false;
-		this.hero = new Character(this.curseurLigne,this.curseurColonne,null);
+		Sprite[] sprites = new Sprite[1];
+		this.hero = new Character(this.curseurLigne,this.curseurColonne,sprites);
 
 		placerMines(nbMines,0,0); //pt de départ du joueur.euse
 		creerCasesLibres();
