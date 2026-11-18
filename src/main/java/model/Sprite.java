@@ -9,4 +9,7 @@ public class Sprite {
     public Sprite(BufferedImage img) {
         this.image = img;
     }
+
+    // Getter
+    public BufferedImage getImage() {return this.image;}   
 }
