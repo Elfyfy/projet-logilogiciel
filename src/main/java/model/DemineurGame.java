@@ -22,6 +22,11 @@ public class DemineurGame implements Game {
 	private long tempsDefaite;
 	private int ligneExplosion, colonneExplosion;
 
+	// AJOUT : victoire
+	private boolean isWon;
+	private long tempsVictoire;
+	private boolean retourMenu; // AJOUT : Échap -> retour au menu
+
 	public DemineurGame(int lignes, int colonnes, int nbMines) {
 		this.lignes = lignes;
 		this.colonnes = colonnes;
@@ -38,6 +43,8 @@ public class DemineurGame implements Game {
 		this.bombes = new Bomb[1];
 		this.bombes[0] = new Bomb(lignes,colonnes,null,1,null);
 		this.isOver = false;
+		this.isWon = false;       // AJOUT
+		this.retourMenu = false;  // AJOUT
 		Sprite[] sprites = new Sprite[1];
 		this.hero = new Character(this.curseurLigne,this.curseurColonne,sprites);
 
@@ -188,6 +195,20 @@ public class DemineurGame implements Game {
 		}
 	}
 
+	// AJOUT : victoire si toutes les cases non minées sont découvertes
+	private void verifierVictoire() {
+		for (int l = 0; l < lignes; l++) {
+			for (int c = 0; c < colonnes; c++) {
+				if (!(grille[l][c] instanceof CaseMinee) && !grille[l][c].getDecouvert()) {
+					return; // il reste une case sûre à découvrir
+				}
+			}
+		}
+		isWon = true;
+		tempsVictoire = System.currentTimeMillis();
+		// chronometre.arreter(); // à décommenter si Chronometre possède une méthode d'arrêt
+	}
+
 	private int NbDrapeaux() {
 		int compteur = 0;
 		for (int l = 0; l < lignes; l++) {
@@ -218,16 +239,26 @@ public class DemineurGame implements Game {
 	public long getTempsDefaite() { return tempsDefaite; }
 	public int getLigneExplosion() { return ligneExplosion; }
 	public int getColonneExplosion() { return colonneExplosion; }
+	public boolean getIsWon() { return isWon; }
+	public long getTempsVictoire() { return tempsVictoire; }
+	public boolean getRetourMenu() { return retourMenu; }
 	
 	public void setIsOver() {this.isOver = true;}
 	
 	@Override
 	public void evolve(Cmd cmd) {
-		// AJOUT : une fois perdu, seule la touche "rejouer" fait quelque chose
-		if (isOver) {
+		// MODIF : Échap marche à tout moment (partie en cours, défaite ou victoire)
+		if (cmd == Cmd.MENU) {
+			retourMenu = true;
+			return;
+		}
+
+		// partie terminée (défaite OU victoire) : seule la touche "rejouer" agit
+		if (isOver || isWon) {
 			if (cmd == Cmd.REJOUER) rejouer();
 			return;
 		}
+
 		switch (cmd) {
 		case UP:    if (curseurLigne > 0) curseurLigne--; break;
 		case DOWN:  if (curseurLigne < lignes - 1) curseurLigne++; break;
@@ -236,17 +267,19 @@ public class DemineurGame implements Game {
 		case FLAG:
 			Case cible = grille[curseurLigne][curseurColonne];
 			if (!cible.getDecouvert()) cible.setDrapeau(); break;
-		default: break; 
 		case REVEAL:
 			decouvrir(curseurLigne, curseurColonne);
+			if (!isOver) verifierVictoire(); // AJOUT
 			break;
+		default: break; 
 		}
 	}
 
 	@Override
 	public boolean isFinished() {
-		if (this.isOver) {
-			return false; // MODIF : on reste affiché pour l'explosion et le menu
+		if (retourMenu) return true; // AJOUT : on quitte la partie, Main réaffiche le menu
+		if (this.isOver || this.isWon) {
+			return false; // MODIF : on reste affiché pour l'explosion / la victoire
 		} else {
 			for (int i = 0; i < this.bombes.length; i++) {
 				Bomb bombe = this.bombes[i];
@@ -256,4 +289,3 @@ public class DemineurGame implements Game {
 		
 	}
 }
-

@@ -4,14 +4,7 @@ import java.awt.event.KeyEvent;
 
 import engine.Cmd;
 
-/**
- * Garde en mémoire les touches choisies par le joueur pour chaque action.
- *
- * Une touche est représentée par un entier :
- *  - un caractère (lettre, chiffre, espace...) -> sa valeur en minuscule
- *  - une flèche -> le code de la flèche en négatif
- *  - 0 -> touche non utilisable
- */
+
 public class Commandes {
 
 	// les actions que le joueur peut configurer (dans cet ordre)

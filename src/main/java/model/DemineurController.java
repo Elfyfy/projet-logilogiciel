@@ -16,7 +16,9 @@ public class DemineurController implements GameController {
 	@Override
 	public Cmd getCommand() {
 		Cmd commande = this.commandeEnCours;
-		if (commande == Cmd.FLAG || commande == Cmd.REVEAL) {
+		// MODIF : REJOUER et MENU sont consommées une seule fois, comme FLAG et REVEAL
+		if (commande == Cmd.FLAG || commande == Cmd.REVEAL
+				|| commande == Cmd.REJOUER || commande == Cmd.MENU) {
 			this.commandeEnCours = Cmd.IDLE;
 		}
 		return commande;
@@ -24,21 +26,28 @@ public class DemineurController implements GameController {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// les touches viennent de la classe Commandes (modifiables depuis le menu)
+		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+			this.commandeEnCours = Cmd.MENU;
+			return;
+		}
 		Cmd action = Commandes.getAction(Commandes.identifiant(e));
 		if (action != null) {
 			this.commandeEnCours = action;
+		} else if (e.getKeyCode() == KeyEvent.VK_R) {
+			this.commandeEnCours = Cmd.REJOUER; // AJOUT : R = rejouer
 		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		this.commandeEnCours = Cmd.IDLE;
+		// ne pas écraser une commande pas encore lue par le moteur (boucle de 100 ms)
+		if (this.commandeEnCours != Cmd.MENU && this.commandeEnCours != Cmd.REJOUER) {
+			this.commandeEnCours = Cmd.IDLE;
+		}
 	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-
 	}
 
 }
