@@ -1,28 +1,30 @@
 package model;
 
+import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
 
 public class Sprite {
-    
+
     private BufferedImage image;
 
     public Sprite(String chemin) {
-        this.image = this.loadImage(chemin);
+        loadImage(chemin);
     }
 
     public void loadImage(String chemin) {
-		try {this.image = ImageIO.read(getClass().getResource(chemin));}
-        catch (Exception e) {
-			System.err.println("Impossible de charger " + chemin);
+        try {
+            this.image = ImageIO.read(getClass().getResource(chemin));
+        } catch (Exception e) {
+            System.err.println("Impossible de charger " + chemin);
             this.image = null;
-		}
-	}
+        }
+    }
 
     public void redimension(int taille) {
-		if (!(this.image == null)) {
+        if (this.image != null) {
             BufferedImage res = new BufferedImage(taille, taille, BufferedImage.TYPE_INT_ARGB);
             Graphics2D g = res.createGraphics();
             g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
@@ -31,7 +33,10 @@ public class Sprite {
             g.dispose();
             this.image = res;
         }
+    }
 
     // Getter
-    public BufferedImage getImage() {return this.image;}   
+    public BufferedImage getImage() {
+        return this.image;
+    }
 }
