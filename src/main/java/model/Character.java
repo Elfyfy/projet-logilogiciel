@@ -5,13 +5,13 @@ import engine.Cmd;
 public class Character {
 
     private int row, column; // Indique la ligne et la colonne du Personnage.
-    private Sprite[] sprites;
+    private Sprite sprite;
     private Cmd dir; // Indique la direction recente du Personnage.
 
-    public Character(int l, int c, Sprite[] sprites) {
+    public Character(int l, int c) {
         this.row = l;
         this.column = c;
-        this.sprites = sprites;
+        this.sprite = DemineurPainter.spriteGilet;
         this.dir = Cmd.IDLE; // La direction est initialement indefinie.
     }
 
@@ -22,5 +22,5 @@ public class Character {
     public void setColumn(int c) {this.column = c;}
     public Cmd getDir() {return this.dir;}
     public void setDir(Cmd d) {this.dir = d;}
-    public Sprite[] getSprites() {return this.sprites;}
+    public Sprite getSprite() {return this.sprite;}
 }
