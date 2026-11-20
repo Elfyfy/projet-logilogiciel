@@ -94,26 +94,32 @@ java -jar target/ProjetJava-1.0-SNAPSHOT.jar
 
 ## 8. Structure actuelle du projet
 
+
 projet-logilogiciel/
 ├── pom.xml
 ├── README.md
+│
+├── docs/
+│   ├── sprint1/
+│   │   ├── diagramme-classes.png
+│   │   ├── backlog1.md
+│   │   ├── sprint-retrospective1.md
+│   │   └── sprint-review1.md
+│   │
+│   ├── sprint2/
+│   │   ├── backlog2.md
+│   │   ├── sprint-retrospective2.md
+│   │   └── sprint-review2.md
+│   │
+│   ├── sprint3/
+│   │   ├── backlog3.md
+│   │   ├── sprint-retrospective3.md
+│   │   └── sprint-review3.md
+│   │
+│   └── sprint4/
+│       └── backlog4.md
+│
 └── src/
-    ├── docs/
-    │   │   ├── sprint1/
-    │   │   │   ├── diagramme-classes.png
-    │   │   │   ├── backlog1.md
-    │   │   │   ├── sprint-retrospective1.md
-    │   │   │   └── sprint-review1.md
-    │   │   ├── sprint2/
-    │   │   │   ├── backlog2.md
-    │   │   │   ├── sprint-retrospective2.md
-    │   │   │   └── sprint-review2.md
-    │   │   └── sprint3/
-    │   │   │   ├── backlog3.md
-    │   │   │   ├── sprint-retrospective3.md                   
-    │   │       └── sprint-review3.md
-    │   │   └── sprint4/
-    │   │   │   ├── backlog4.md
     ├── main/
     │   ├── java/
     │   │   ├── engine/
@@ -124,6 +130,7 @@ projet-logilogiciel/
     │   │   │   ├── GameEngineGraphical.java
     │   │   │   ├── GamePainter.java
     │   │   │   └── GraphicalInterface.java
+    │   │   │
     │   │   ├── model/
     │   │   │   ├── Bomb.java
     │   │   │   ├── Case.java
@@ -142,11 +149,14 @@ projet-logilogiciel/
     │   │   │   ├── Theme.java
     │   │   │   ├── Tile.java
     │   │   │   └── Wall.java
+    │   │   │
     │   │   ├── start/
     │   │   │   └── Main.java
+    │   │   │
     │   │   └── view/
     │   │       ├── MenuDifficulte.java
     │   │       └── MenuPrincipal.java
+    │   │
     │   └── resources/
     │       └── images/
     │           ├── flag.png
@@ -154,18 +164,21 @@ projet-logilogiciel/
     │           ├── lgbt2.png
     │           ├── menu_fond.png
     │           └── mine.png
+    │
     └── test/
         └── java/
-            └── model/
-                ├── CaseLibreTest.java
-                ├── CaseMineeTest.java
-                ├── CaseTest.java
-                ├── ChronometreTest.java
-                ├── DemineurControllerTest.java
-                ├── DemineurGameTest.java
-                └── DemineurPainterTest.java
+            ├── model/
+            │   ├── CaseLibreTest.java
+            │   ├── CaseMineeTest.java
+            │   ├── CaseTest.java
+            │   ├── ChronometreTest.java
+            │   ├── DemineurControllerTest.java
+            │   ├── DemineurGameTest.java
+            │   └── DemineurPainterTest.java
+            │
             └── view/
-                ├── MenuPrincipalTest.java
+                └── MenuPrincipalTest.java
+
 
 
 ### Rôle des principaux dossiers
