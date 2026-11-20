@@ -34,6 +34,16 @@ public class MenuPrincipal extends JDialog {
 	private static int niveauMemo = 0;
 	private static int tailleMemo = 1;
 
+	// Retourne les dimensions correspondant à une taille
+	static int[] dimensionsPourTaille(int taille) {
+		return TAILLES[taille].clone();
+	}
+
+	// Calcule le nombre de mines selon la taille et la difficulté
+	static int calculerNbMines(int lignes, int colonnes, int niveau) {
+		return Math.max(1, (int) (lignes * colonnes * TAUX[niveau]));
+	}
+
 	private int ecran = ACCUEIL;
 	private int ligne = 0;                  // bouton sélectionné
 	private int niveau = niveauMemo;
@@ -83,9 +93,10 @@ public class MenuPrincipal extends JDialog {
 		if (!menu.lancer) return null;
 		niveauMemo = menu.niveau;
 		tailleMemo = menu.taille;
-		int lignes = TAILLES[menu.taille][0];
-		int colonnes = TAILLES[menu.taille][1];
-		int nbMines = Math.max(1, (int) (lignes * colonnes * TAUX[menu.niveau]));
+		int[] dimensions = dimensionsPourTaille(menu.taille);
+		int lignes = dimensions[0];
+		int colonnes = dimensions[1];
+		int nbMines = calculerNbMines(lignes, colonnes, menu.niveau);
 		return new Parametres(menu.niveau, lignes, colonnes, nbMines);
 	}
 
