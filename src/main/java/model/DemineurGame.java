@@ -181,6 +181,7 @@ public class DemineurGame implements Game {
 	// AJOUT : défaite = on mémorise où et quand, puis on révèle toutes les mines
 	private void declencherDefaite(int l, int c) {
 		isOver = true;
+		chronometre.arreter();
 		tempsDefaite = System.currentTimeMillis();
 		ligneExplosion = l;
 		colonneExplosion = c;
@@ -201,6 +202,7 @@ public class DemineurGame implements Game {
 			}
 		}
 		isWon = true;
+		chronometre.arreter();
 		tempsVictoire = System.currentTimeMillis();
 		// chronometre.arreter(); // à décommenter si Chronometre possède une méthode d'arrêt
 	}
