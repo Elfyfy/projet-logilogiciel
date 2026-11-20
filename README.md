@@ -94,7 +94,7 @@ java -jar target/ProjetJava-1.0-SNAPSHOT.jar
 
 ## 8. Structure actuelle du projet
 
-
+```text
 projet-logilogiciel/
 ├── pom.xml
 ├── README.md
@@ -178,7 +178,7 @@ projet-logilogiciel/
             │
             └── view/
                 └── MenuPrincipalTest.java
-
+```
 
 
 ### Rôle des principaux dossiers
