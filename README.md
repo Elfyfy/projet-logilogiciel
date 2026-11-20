@@ -98,22 +98,24 @@ projet-logilogiciel/
 ├── pom.xml
 ├── README.md
 └── src/
+    ├── docs/
+    │   │   ├── sprint1/
+    │   │   │   ├── diagramme-classes.png
+    │   │   │   ├── backlog1.md
+    │   │   │   ├── sprint-retrospective1.md
+    │   │   │   └── sprint-review1.md
+    │   │   ├── sprint2/
+    │   │   │   ├── backlog2.md
+    │   │   │   ├── sprint-retrospective2.md
+    │   │   │   └── sprint-review2.md
+    │   │   └── sprint3/
+    │   │   │   ├── backlog3.md
+    │   │   │   ├── sprint-retrospective3.md                   
+    │   │       └── sprint-review3.md
+    │   │   └── sprint4/
+    │   │   │   ├── backlog4.md
     ├── main/
     │   ├── java/
-    │   │   ├── docs/
-    │   │   │   ├── sprint-1/
-    │   │   │   │   ├── conception/
-    │   │   │   │   │   ├── diagramme-classes.png
-    │   │   │   │   │   └── diagramme-sequence.puml
-    │   │   │   │   ├── backlog1.md
-    │   │   │   │   ├── sprint-retrospective1.md
-    │   │   │   │   └── sprint-review1.md
-    │   │   │   ├── sprint-2/
-    │   │   │   │   ├── backlog2.md
-    │   │   │   │   ├── sprint-retrospective2.md
-    │   │   │   │   └── sprint-review2.md
-    │   │   │   └── sprint-3/
-    │   │   │       └── backlog3.md
     │   │   ├── engine/
     │   │   │   ├── Cmd.java
     │   │   │   ├── DrawingPanel.java
@@ -162,6 +164,9 @@ projet-logilogiciel/
                 ├── DemineurControllerTest.java
                 ├── DemineurGameTest.java
                 └── DemineurPainterTest.java
+            └── view/
+                ├── MenuPrincipalTest.java
+
 
 ### Rôle des principaux dossiers
 
