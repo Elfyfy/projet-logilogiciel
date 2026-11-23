@@ -25,7 +25,7 @@ public class DemineurPainter implements GamePainter {
 
 	// Initialisation des Sprites :
 	public static final Sprite spriteFlag = new Sprite("/images/flag.png",TAILLE_CASE - 6);
-	public static final Sprite spriteGilet = new Sprite("/images/gilet.png",TAILLE_CASE - 6);
+	public static final Sprite spriteGilet = new Sprite("/images/gilet.png",TAILLE_CASE - 4);
 	public static final Sprite spriteMine = new Sprite("/images/mine.png",TAILLE_CASE - 6);
 
 	public DemineurPainter(DemineurGame jeu) {
