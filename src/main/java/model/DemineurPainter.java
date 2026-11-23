@@ -1,12 +1,11 @@
 package model;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.awt.AlphaComposite;
-
 
 import javax.imageio.ImageIO;
 
@@ -23,6 +22,11 @@ public class DemineurPainter implements GamePainter {
 	private BufferedImage imgDrapeau;
 	private BufferedImage imgGilet;
 	private BufferedImage imgMine;
+
+	// Initialisation des Sprites :
+	public static final Sprite spriteFlag = new Sprite("/images/flag.png",TAILLE_CASE - 6);
+	public static final Sprite spriteGilet = new Sprite("/images/gilet.png",TAILLE_CASE - 4);
+	public static final Sprite spriteMine = new Sprite("/images/mine.png",TAILLE_CASE - 6);
 
 	public DemineurPainter(DemineurGame jeu) {
 		this(jeu, Theme.pour(0));
