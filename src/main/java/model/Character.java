@@ -23,4 +23,5 @@ public class Character {
     public Cmd getDir() {return this.dir;}
     public void setDir(Cmd d) {this.dir = d;}
     public Sprite[] getSprites() {return this.sprites;}
+    public void setSprites(Sprite[] tabSprites) {this.sprites = tabSprites;}
 }
