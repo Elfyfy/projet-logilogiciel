@@ -8,13 +8,13 @@ public class Tile {
     private boolean pinned; // Indique si la case possede un drapeau.
     private Sprite[] sprites;
 
-    public Tile(int l, int c, boolean acc, Sprite[] sprites) {
+    public Tile(int l, int c, boolean acc) {
         this.row = l;
         this.column = c;
         this.accessible = acc;
         this.unknown = true; // Une case est initialement inconnue.
         this.pinned = false; // Une case est initialement sans drapeau.
-        this.sprites = sprites;
+        this.sprites = null;
     }
 
     // Getters et Setters
@@ -28,4 +28,5 @@ public class Tile {
     public boolean getPinned() {return this.pinned;}
     public void setPinned(boolean b) {this.pinned = b;}
     public Sprite[] getSprites() {return this.sprites;}
+    public void setSprites(Sprite[] tabSprites) {this.sprites = tabSprites;}
 }

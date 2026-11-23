@@ -7,12 +7,13 @@ public class Bomb extends Tile {
     private boolean active; 
     private boolean blown;
 
-    public Bomb(int l, int c, Sprite[] sprites, int fuse, int[][] shape) {
-        super(l,c,false,sprites);
+    public Bomb(int l, int c, Sprite[] tabSprites, int fuse, int[][] shape) {
+        super(l,c,false);
         this.fuse = fuse;
         this.shape = shape;
         this.active = false;
         this.blown = false;
+        this.setSprites(tabSprites);
     }
 
     public int getFuse() {return this.fuse;}
