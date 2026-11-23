@@ -10,8 +10,9 @@ public class Sprite {
 
     private BufferedImage image;
 
-    public Sprite(String chemin) {
-        loadImage(chemin);
+    public Sprite(String chemin,int taille) {
+        this.loadImage(chemin);
+        this.redimension(taille);
     }
 
     public void loadImage(String chemin) {
