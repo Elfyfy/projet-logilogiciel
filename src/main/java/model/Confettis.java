@@ -44,14 +44,6 @@ public class Confettis {
 		}
 	}
 
-	/**
-	 * Dessine les confettis, qui tombent en boucle.
-	 *
-	 * @param g       crayon
-	 * @param ecoule  temps écoulé (ms) depuis le début de l'animation
-	 * @param largeur largeur de la zone de jeu
-	 * @param hauteur hauteur de la zone de jeu
-	 */
 	public void dessiner(Graphics2D g, long ecoule, int largeur, int hauteur) {
 		float s = ecoule / 1000f;
 		for (int i = 0; i < nb; i++) {

@@ -1,14 +1,10 @@
 package model;
 
 import java.awt.AlphaComposite;
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-
-import javax.imageio.ImageIO;
 
 import engine.GamePainter;
 
@@ -17,17 +13,20 @@ public class DemineurPainter implements GamePainter {
 	private static final int TAILLE_CASE = 30;
 	private static final int HAUTEUR_HEADER = 35;
 
+	// Menu de fin (commun a la victoire et a la defaite)
+	private static final long DUREE_EXPLOSION = 900;
+	private static final long DELAI_MENU_VICTOIRE = 700;
+	private static final Font POLICE_TITRE_MENU = new Font("SansSerif", Font.BOLD, 22);
+	private static final Font POLICE_MENU = new Font("SansSerif", Font.PLAIN, 14);
+	private static final Color FOND_MENU = new Color(30, 38, 50);
+	private static final Color VOILE_SOMBRE = new Color(0, 0, 0, 170);
+
 	private DemineurGame jeu;
 	private Theme theme;
 	private Flammes flammes;
-	private BufferedImage imgDrapeau;
-	private BufferedImage imgGilet;
-	private BufferedImage imgMine;
-
-	// AJOUT : confettis de victoire (classe séparée)
 	private final Confettis confettis = new Confettis();
 
-	// Initialisation des Sprites :
+	// Initialisation des Sprites (charges et redimensionnes une seule fois) :
 	public static final Sprite spriteFlag = new Sprite("/images/flag.png",TAILLE_CASE - 6);
 	public static final Sprite spriteGilet = new Sprite("/images/gilet.png",TAILLE_CASE - 4);
 	public static final Sprite spriteMine = new Sprite("/images/mine.png",TAILLE_CASE - 6);
@@ -40,29 +39,6 @@ public class DemineurPainter implements GamePainter {
 		this.jeu = jeu;
 		this.theme = theme;
 		this.flammes = theme.flammes ? new Flammes() : null;
-		imgDrapeau = redimensionner(chargerImage("/images/flag.png"), TAILLE_CASE - 6);
-		imgGilet = redimensionner(chargerImage("/images/gilet.png"), TAILLE_CASE - 4);
-		imgMine = redimensionner(chargerImage("/images/mine.png"), TAILLE_CASE - 6);
-	}
-
-	private BufferedImage redimensionner(BufferedImage source, int taille) {
-		if (source == null) return null;
-		BufferedImage res = new BufferedImage(taille, taille, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g = res.createGraphics();
-		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-		g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-		g.drawImage(source, 0, 0, taille, taille, null);
-		g.dispose();
-		return res;
-	}
-
-	private BufferedImage chargerImage(String chemin) {
-		try {
-			return ImageIO.read(getClass().getResource(chemin));
-		} catch (Exception e) {
-			System.err.println("Impossible de charger " + chemin);
-			return null;
-		}
 	}
 
 	@Override
@@ -130,8 +106,8 @@ public class DemineurPainter implements GamePainter {
 
 				if (case_.getDecouvert()) {
 					   if (case_ instanceof CaseMinee) {
-       						if (imgMine != null) {
-           						crayon.drawImage(imgMine, x + 3, y + 3, null);
+       						if (spriteMine.getImage() != null) {
+           						crayon.drawImage(spriteMine.getImage(), x + 3, y + 3, null);
        						} else {
            						texte = case_.getSprite();
       			 }
@@ -141,8 +117,8 @@ public class DemineurPainter implements GamePainter {
 						if (n > 0) texte = String.valueOf(n);
 					}
 				} else if (case_.getDrapeau()) {
-					if (imgDrapeau != null) {
-						crayon.drawImage(imgDrapeau, x + 3, y + 3, null);
+					if (spriteFlag.getImage() != null) {
+						crayon.drawImage(spriteFlag.getImage(), x + 3, y + 3, null);
 					} else {
 						texte = "F";
 					}
@@ -157,36 +133,48 @@ public class DemineurPainter implements GamePainter {
 		// Curseur dessiné en dernier : il passe par-dessus les drapeaux
 		int xc = jeu.getCurseurColonne() * TAILLE_CASE;
 		int yc = HAUTEUR_HEADER + jeu.getCurseurLigne() * TAILLE_CASE;
-		if (imgGilet != null) {
+		if (spriteGilet.getImage() != null) {
 		crayon.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
-		crayon.drawImage(imgGilet, xc + 2, yc + 2, null);
+		crayon.drawImage(spriteGilet.getImage(), xc + 2, yc + 2, null);
 		crayon.setComposite(AlphaComposite.SrcOver);
 		} else {
 			crayon.setColor(Color.YELLOW);
 			crayon.drawRect(xc + 1, yc + 1, TAILLE_CASE - 2, TAILLE_CASE - 2);
 		}
 
-		// AJOUT : explosion puis menu de fin
+		// Fin de partie : explosion puis menu (defaite) ou menu (victoire)
 		if (jeu.getIsOver()) {
-			long ecoule = System.currentTimeMillis() - jeu.getTempsDefaite();
-			dessinerExplosion(crayon, ecoule);
-			if (ecoule > 900) dessinerMenuFin(crayon);
+			dessinerDefaite(crayon);
 		}
-
-		// AJOUT : animation puis menu de victoire
 		if (jeu.getIsWon()) {
-			long ecoule = System.currentTimeMillis() - jeu.getTempsVictoire();
-			dessinerOndes(crayon, ecoule);
-			confettis.dessiner(crayon, ecoule, getWidth(), getHeight());
-			if (ecoule > 700) dessinerMenuVictoire(crayon);
+			dessinerVictoire(crayon);
 		}
 
 		crayon.dispose();
 	}
 
+	/** Explosion qui part de la mine touchee, puis menu "Partie perdue". */
+	private void dessinerDefaite(Graphics2D g) {
+		long ecoule = System.currentTimeMillis() - jeu.getTempsDefaite();
+		dessinerExplosion(g, ecoule);
+		if (ecoule > DUREE_EXPLOSION) {
+			dessinerMenuFin(g, "BOOM !", new Color(255, 140, 0), new Color(215, 85, 75),
+					"Partie perdue", "R : rejouer", "Échap : menu");
+		}
+	}
+
+	private void dessinerVictoire(Graphics2D g) {
+		long ecoule = System.currentTimeMillis() - jeu.getTempsVictoire();
+		confettis.dessiner(g, ecoule, getWidth(), getHeight());
+		if (ecoule > DELAI_MENU_VICTOIRE) {
+			dessinerMenuFin(g, "VICTOIRE !", new Color(255, 215, 80), new Color(240, 200, 60),
+					"Temps : " + jeu.getChronometre().getTempsFormate(), "R : rejouer", "Échap : menu");
+		}
+	}
+
 	// AJOUT : explosion qui part de la case piégée
 	private void dessinerExplosion(Graphics2D g, long ecoule) {
-		float p = Math.min(1f, ecoule / 900f);
+		float p = Math.min(1f, ecoule / (float) DUREE_EXPLOSION);
 		int cx = jeu.getColonneExplosion() * TAILLE_CASE + TAILLE_CASE / 2;
 		int cy = HAUTEUR_HEADER + jeu.getLigneExplosion() * TAILLE_CASE + TAILLE_CASE / 2;
 		int rMax = Math.max(getWidth(), getHeight());
@@ -217,76 +205,30 @@ public class DemineurPainter implements GamePainter {
 		}
 	}
 
-	// AJOUT : menu "Partie perdue"
-	private void dessinerMenuFin(Graphics2D g) {
-		g.setColor(new Color(0, 0, 0, 170));
+	/** Assombrit le jeu et affiche une fenetre avec un titre et quelques lignes de texte. */
+	private void dessinerMenuFin(Graphics2D g, String titre, Color couleurTitre, Color couleurCadre, String... lignes) {
+		g.setColor(VOILE_SOMBRE);
 		g.fillRect(0, 0, getWidth(), getHeight());
 
-		int w = Math.min(getWidth() - 20, 260);
-		int h = 130;
-		int x = (getWidth() - w) / 2;
-		int y = (getHeight() - h) / 2;
+		int largeur = Math.min(getWidth() - 20, 260);
+		int hauteur = 70 + 25 * lignes.length;
+		int x = (getWidth() - largeur) / 2;
+		int y = (getHeight() - hauteur) / 2;
 
-		g.setColor(new Color(30, 38, 50));
-		g.fillRoundRect(x, y, w, h, 16, 16);
-		g.setColor(new Color(215, 85, 75));
-		g.drawRoundRect(x, y, w, h, 16, 16);
+		g.setColor(FOND_MENU);
+		g.fillRoundRect(x, y, largeur, hauteur, 16, 16);
+		g.setColor(couleurCadre);
+		g.drawRoundRect(x, y, largeur, hauteur, 16, 16);
 
-		g.setFont(new Font("SansSerif", Font.BOLD, 22));
-		g.setColor(new Color(255, 140, 0));
-		texteCentre(g, "BOOM !", y + 40);
+		g.setFont(POLICE_TITRE_MENU);
+		g.setColor(couleurTitre);
+		texteCentre(g, titre, y + 40);
 
-		g.setFont(new Font("SansSerif", Font.PLAIN, 14));
+		g.setFont(POLICE_MENU);
 		g.setColor(Color.WHITE);
-		texteCentre(g, "Partie perdue", y + 65);
-		texteCentre(g, "R : rejouer", y + 92);
-		texteCentre(g, "Échap : menu", y + 112);
-	}
-
-	// AJOUT : ondes dorées qui partent du centre (équivalent de l'explosion)
-	private void dessinerOndes(Graphics2D g, long ecoule) {
-		if (ecoule > 1000) return;
-		float p = ecoule / 1000f;
-		int cx = getWidth() / 2;
-		int cy = getHeight() / 2;
-		int rMax = Math.max(getWidth(), getHeight());
-		int alpha = (int) (200 * (1 - p));
-
-		g.setStroke(new BasicStroke(4f));
-		for (int k = 0; k < 3; k++) {
-			float pk = p - k * 0.15f;
-			if (pk <= 0) continue;
-			int r = (int) (rMax * pk);
-			g.setColor(new Color(255, 215, 80, alpha));
-			g.drawOval(cx - r, cy - r, 2 * r, 2 * r);
+		for (int i = 0; i < lignes.length; i++) {
+			texteCentre(g, lignes[i], y + 68 + 25 * i);
 		}
-		g.setStroke(new BasicStroke(1f));
-	}
-
-	// AJOUT : menu "Victoire" (fixe, comme le menu de défaite)
-	private void dessinerMenuVictoire(Graphics2D g) {
-		g.setColor(new Color(0, 0, 0, 170));
-		g.fillRect(0, 0, getWidth(), getHeight());
-
-		int w = Math.min(getWidth() - 20, 260);
-		int h = 150;
-		int x = (getWidth() - w) / 2;
-		int y = (getHeight() - h) / 2;
-
-		g.setColor(new Color(30, 38, 50));
-		g.fillRoundRect(x, y, w, h, 16, 16);
-		g.setColor(new Color(240, 200, 60));
-		g.drawRoundRect(x, y, w, h, 16, 16);
-
-		g.setFont(new Font("SansSerif", Font.BOLD, 22));
-		g.setColor(new Color(255, 215, 80));
-		texteCentre(g, "VICTOIRE !", y + 40);
-
-		g.setFont(new Font("SansSerif", Font.PLAIN, 14));
-		g.setColor(Color.WHITE);
-		texteCentre(g, "Temps : " + jeu.getChronometre().getTempsFormate(), y + 70);
-		texteCentre(g, "R : rejouer", y + 105);
-		texteCentre(g, "Échap : menu", y + 128);
 	}
 
 	// AJOUT
