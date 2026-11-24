@@ -1,6 +1,7 @@
 package model;
 
 import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -22,6 +23,9 @@ public class DemineurPainter implements GamePainter {
 	private BufferedImage imgDrapeau;
 	private BufferedImage imgGilet;
 	private BufferedImage imgMine;
+
+	// AJOUT : confettis de victoire (classe séparée)
+	private final Confettis confettis = new Confettis();
 
 	// Initialisation des Sprites :
 	public static final Sprite spriteFlag = new Sprite("/images/flag.png",TAILLE_CASE - 6);
@@ -169,6 +173,14 @@ public class DemineurPainter implements GamePainter {
 			if (ecoule > 900) dessinerMenuFin(crayon);
 		}
 
+		// AJOUT : animation puis menu de victoire
+		if (jeu.getIsWon()) {
+			long ecoule = System.currentTimeMillis() - jeu.getTempsVictoire();
+			dessinerOndes(crayon, ecoule);
+			confettis.dessiner(crayon, ecoule, getWidth(), getHeight());
+			if (ecoule > 700) dessinerMenuVictoire(crayon);
+		}
+
 		crayon.dispose();
 	}
 
@@ -228,7 +240,53 @@ public class DemineurPainter implements GamePainter {
 		g.setColor(Color.WHITE);
 		texteCentre(g, "Partie perdue", y + 65);
 		texteCentre(g, "R : rejouer", y + 92);
-		texteCentre(g, "Échap : quitter", y + 112);
+		texteCentre(g, "Échap : menu", y + 112);
+	}
+
+	// AJOUT : ondes dorées qui partent du centre (équivalent de l'explosion)
+	private void dessinerOndes(Graphics2D g, long ecoule) {
+		if (ecoule > 1000) return;
+		float p = ecoule / 1000f;
+		int cx = getWidth() / 2;
+		int cy = getHeight() / 2;
+		int rMax = Math.max(getWidth(), getHeight());
+		int alpha = (int) (200 * (1 - p));
+
+		g.setStroke(new BasicStroke(4f));
+		for (int k = 0; k < 3; k++) {
+			float pk = p - k * 0.15f;
+			if (pk <= 0) continue;
+			int r = (int) (rMax * pk);
+			g.setColor(new Color(255, 215, 80, alpha));
+			g.drawOval(cx - r, cy - r, 2 * r, 2 * r);
+		}
+		g.setStroke(new BasicStroke(1f));
+	}
+
+	// AJOUT : menu "Victoire" (fixe, comme le menu de défaite)
+	private void dessinerMenuVictoire(Graphics2D g) {
+		g.setColor(new Color(0, 0, 0, 170));
+		g.fillRect(0, 0, getWidth(), getHeight());
+
+		int w = Math.min(getWidth() - 20, 260);
+		int h = 150;
+		int x = (getWidth() - w) / 2;
+		int y = (getHeight() - h) / 2;
+
+		g.setColor(new Color(30, 38, 50));
+		g.fillRoundRect(x, y, w, h, 16, 16);
+		g.setColor(new Color(240, 200, 60));
+		g.drawRoundRect(x, y, w, h, 16, 16);
+
+		g.setFont(new Font("SansSerif", Font.BOLD, 22));
+		g.setColor(new Color(255, 215, 80));
+		texteCentre(g, "VICTOIRE !", y + 40);
+
+		g.setFont(new Font("SansSerif", Font.PLAIN, 14));
+		g.setColor(Color.WHITE);
+		texteCentre(g, "Temps : " + jeu.getChronometre().getTempsFormate(), y + 70);
+		texteCentre(g, "R : rejouer", y + 105);
+		texteCentre(g, "Échap : menu", y + 128);
 	}
 
 	// AJOUT
