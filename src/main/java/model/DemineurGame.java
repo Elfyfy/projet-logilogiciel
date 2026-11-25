@@ -278,7 +278,7 @@ public class DemineurGame implements Game {
 			return false; // MODIF : on reste affiché pour l'explosion / la victoire
 		} else {
 			for (int i = 0; i < this.bombes.length; i++) {
-				Bomb bombe = this.bombes[i];
+				CaseBombe bombe = this.bombes[i];
 				if (!bombe.getBlown()) {return false;}
 			} return true;
 		}
