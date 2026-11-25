@@ -164,13 +164,19 @@ public class DemineurPainter implements GamePainter {
 	}
 
 	private void dessinerVictoire(Graphics2D g) {
-		long ecoule = System.currentTimeMillis() - jeu.getTempsVictoire();
-		confettis.dessiner(g, ecoule, getWidth(), getHeight());
-		if (ecoule > DELAI_MENU_VICTOIRE) {
-			dessinerMenuFin(g, "VICTOIRE !", new Color(255, 215, 80), new Color(240, 200, 60),
-					"Temps : " + jeu.getChronometre().getTempsFormate(), "R : rejouer", "Échap : menu");
-		}
-	}
+    long ecoule = System.currentTimeMillis() - jeu.getTempsVictoire();
+    confettis.dessiner(g, ecoule, getWidth(), getHeight());
+    if (ecoule > DELAI_MENU_VICTOIRE) {
+        String temps = "Temps : " + jeu.getChronometre().getTempsFormate();
+        if (jeu.getNiveauSuivantPossible()) {
+            dessinerMenuFin(g, "VICTOIRE !", new Color(255, 215, 80), new Color(240, 200, 60),
+                    temps, "Entrée : niveau suivant", "R : rejouer", "Échap : menu");
+        } else {
+            dessinerMenuFin(g, "TOUS LES NIVEAUX !", new Color(255, 215, 80), new Color(240, 200, 60),
+                    temps, "R : rejouer", "Échap : menu");
+        }
+    }
+}
 
 	// AJOUT : explosion qui part de la case piégée
 	private void dessinerExplosion(Graphics2D g, long ecoule) {
