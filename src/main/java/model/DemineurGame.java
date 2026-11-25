@@ -14,8 +14,10 @@ public class DemineurGame implements Game {
 	private int curseurColonne = 0;
 	private int nbMines; 
 	private Chronometre chronometre; // MODIF : créé dans initialiser()
-	private Bomb[] bombes;
+	private CaseBombe[] bombes;
 	private boolean isOver;
+
+	// AJOUT : personnage
 	private Character hero;
 	private static boolean moderateur = false;
 	public static void basculerModerateur() {
@@ -42,17 +44,15 @@ public class DemineurGame implements Game {
 	// AJOUT : (ré)initialise la partie, utilisée au démarrage et pour rejouer
 	private void initialiser() {
 		this.grille = new Case[lignes][colonnes];
+		// Initialisation du personnage
+		this.hero = new Character(0,0,this);
 		this.curseurLigne = 0;
 		this.curseurColonne = 0;
+		// Initialisation du Chronometre
 		this.chronometre = new Chronometre();
-		this.bombes = new Bomb[1];
-		this.bombes[0] = new Bomb(lignes,colonnes,null,1,null);
 		this.isOver = false;
 		this.isWon = false;       // AJOUT
 		this.retourMenu = false;  // AJOUT
-		Sprite[] sprites = new Sprite[1];
-		this.hero = new Character(this.curseurLigne,this.curseurColonne,sprites);
-		this.niveauSuivant = false;
 
 		placerMines(nbMines,0,0); //pt de départ du joueur.euse
 		creerCasesLibres();
@@ -209,7 +209,7 @@ public class DemineurGame implements Game {
 		}
 	}
 
-	// AJOUT : victoire si toutes les cases non minées sont découvertes
+	// AJOUT : victoire si toutes les cases non minées sont découvertes (plus tard si toutes les bombes ont explosés)
 	private void verifierVictoire() {
 		for (int l = 0; l < lignes; l++) {
 			for (int c = 0; c < colonnes; c++) {
@@ -246,7 +246,7 @@ public class DemineurGame implements Game {
 	public int getNbMines() { return nbMines; }
 	public int getMinesRestantes() { return nbMines - getNbDrapeaux(); }
 	public int getNbDrapeaux() { return NbDrapeaux(); }
-	public Bomb[] getBomb() {return this.bombes;}
+	public CaseBombe[] getBomb() {return this.bombes;}
 	public int getNbBombes() {return this.bombes.length;}
 	public boolean getIsOver() {return this.isOver;}
 	public Character getHero() {return this.hero;}
@@ -277,10 +277,22 @@ public class DemineurGame implements Game {
 }
 
 		switch (cmd) {
-		case UP:    if (curseurLigne > 0) curseurLigne--; break;
-		case DOWN:  if (curseurLigne < lignes - 1) curseurLigne++; break;
-		case LEFT:  if (curseurColonne > 0) curseurColonne--; break;
-		case RIGHT: if (curseurColonne < colonnes - 1) curseurColonne++; break;
+		case UP:
+			if (curseurLigne > 0) {
+				curseurLigne--;	break;
+			}
+		case DOWN:
+			if (curseurLigne < lignes - 1) {
+				curseurLigne++; break;
+			}
+		case LEFT:
+			if (curseurColonne > 0) {
+				curseurColonne--; break;
+			}
+		case RIGHT:
+			if (curseurColonne < colonnes - 1) {
+				curseurColonne++; break;
+			}
 		case FLAG:
 			Case cible = grille[curseurLigne][curseurColonne];
 			if (!cible.getDecouvert()) cible.setDrapeau();
@@ -302,7 +314,7 @@ public class DemineurGame implements Game {
 			return false; // MODIF : on reste affiché pour l'explosion / la victoire
 		} else {
 			for (int i = 0; i < this.bombes.length; i++) {
-				Bomb bombe = this.bombes[i];
+				CaseBombe bombe = this.bombes[i];
 				if (!bombe.getBlown()) {return false;}
 			} return true;
 		}
