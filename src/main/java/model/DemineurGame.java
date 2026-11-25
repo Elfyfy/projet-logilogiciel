@@ -19,7 +19,10 @@ public class DemineurGame implements Game {
 
 	// AJOUT : personnage
 	private Character hero;
-
+	private static boolean moderateur = false;
+	public static void basculerModerateur() {
+	moderateur = !moderateur;
+}
 	// AJOUT : infos pour l'explosion
 	private long tempsDefaite;
 	private int ligneExplosion, colonneExplosion;
@@ -28,6 +31,8 @@ public class DemineurGame implements Game {
 	private boolean isWon;
 	private long tempsVictoire;
 	private boolean retourMenu; // AJOUT : Échap -> retour au menu
+	private boolean niveauSuivant;
+	private boolean niveauSuivantPossible;
 
 	public DemineurGame(int lignes, int colonnes, int nbMines) {
 		this.lignes = lignes;
@@ -57,6 +62,17 @@ public class DemineurGame implements Game {
 	// AJOUT
 	public void rejouer() {
 		initialiser();
+	}
+
+	// MODÉRATEUR : découvre toutes les cases qui ne sont pas des mines
+	private void toutDecouvrirSaufMines() {
+		for (int l = 0; l < lignes; l++) {
+			for (int c = 0; c < colonnes; c++) {
+				if (!(grille[l][c] instanceof CaseMinee) && !grille[l][c].getDecouvert()) {
+					grille[l][c].setDecouvert();
+				}
+			}
+		}
 	}
 
 	private int abs(int z){if(z<0){return abs(-z);};return z;}
@@ -241,7 +257,9 @@ public class DemineurGame implements Game {
 	public boolean getIsWon() { return isWon; }
 	public long getTempsVictoire() { return tempsVictoire; }
 	public boolean getRetourMenu() { return retourMenu; }
-	
+	public boolean getNiveauSuivant() { return niveauSuivant; }
+	public boolean getNiveauSuivantPossible() { return niveauSuivantPossible; }
+	public void setNiveauSuivantPossible(boolean b) { this.niveauSuivantPossible = b; }
 	public void setIsOver() {this.isOver = true;}
 	
 	@Override
@@ -252,11 +270,11 @@ public class DemineurGame implements Game {
 			return;
 		}
 
-		// partie terminée (défaite OU victoire) : seule la touche "rejouer" agit
 		if (isOver || isWon) {
-			if (cmd == Cmd.REJOUER) rejouer();
-			return;
-		}
+		if (cmd == Cmd.REJOUER) rejouer();
+		else if (cmd == Cmd.SUIVANT && isWon && niveauSuivantPossible) niveauSuivant = true;
+		return;
+}
 
 		switch (cmd) {
 		case UP:
@@ -277,18 +295,21 @@ public class DemineurGame implements Game {
 			}
 		case FLAG:
 			Case cible = grille[curseurLigne][curseurColonne];
-			if (!cible.getDecouvert()) cible.setDrapeau(); break;
+			if (!cible.getDecouvert()) cible.setDrapeau();
+			break;
 		case REVEAL:
 			decouvrir(curseurLigne, curseurColonne);
-			if (!isOver) verifierVictoire(); // AJOUT
+			if (moderateur && !isOver) toutDecouvrirSaufMines(); // MODÉRATEUR
+			if (!isOver) verifierVictoire();
 			break;
-		default: break; 
+		default:
+			break;
 		}
-	}
+		}
 
 	@Override
 	public boolean isFinished() {
-		if (retourMenu) return true; // AJOUT : on quitte la partie, Main réaffiche le menu
+		if (retourMenu || niveauSuivant) return true;
 		if (this.isOver || this.isWon) {
 			return false; // MODIF : on reste affiché pour l'explosion / la victoire
 		} else {

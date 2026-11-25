@@ -13,14 +13,33 @@ public class Main {
 
 		MenuPrincipal.Parametres choix;
 		while ((choix = MenuPrincipal.afficher()) != null) {
-			DemineurGame game = new DemineurGame(choix.lignes, choix.colonnes, choix.nbMines);
-			DemineurPainter painter = new DemineurPainter(game, Theme.pour(choix.niveau));
-			DemineurController controller = new DemineurController();
+			int niveau = choix.niveau;
+			int taille = choix.taille;
+			boolean enchainer = true;
 
-			GameEngineGraphical engine = new GameEngineGraphical(game, painter, controller);
-			engine.run();
+			while (enchainer) {
+				int[] dim = MenuPrincipal.dimensionsPourTaille(taille);
+				int nbMines = MenuPrincipal.calculerNbMines(dim[0], dim[1], niveau);
+
+				DemineurGame game = new DemineurGame(dim[0], dim[1], nbMines);
+				game.setNiveauSuivantPossible(!(niveau == 2 && taille == 2));
+				DemineurPainter painter = new DemineurPainter(game, Theme.pour(niveau));
+				DemineurController controller = new DemineurController();
+
+				new GameEngineGraphical(game, painter, controller).run();
+
+				if (game.getNiveauSuivant()) {
+					taille++;
+					if (taille > 2) {
+						taille = 0;
+						niveau++;
+					}
+				} else {
+					enchainer = false; // Échap : retour au menu
+				}
+			}
 		}
 		System.exit(0);
 	}
 
-} 
+}

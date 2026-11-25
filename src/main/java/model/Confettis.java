@@ -13,10 +13,10 @@ public class Confettis {
 	};
 
 	private final int nb;
-	private final float[] x;         // position horizontale (0..1 de la largeur)
-	private final float[] vitesse;   // vitesse de chute (px/s)
-	private final float[] decalage;  // départ décalé (0..1 de la hauteur)
-	private final float[] phase;     // balancement / rotation
+	private final float[] x;         
+	private final float[] vitesse;  
+	private final float[] decalage;  
+	private final float[] phase;    
 	private final int[] taille;
 	private final Color[] couleur;
 
