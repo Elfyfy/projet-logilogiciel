@@ -133,7 +133,10 @@ public class MenuPrincipal extends JDialog {
 
 	private void toucheAppuyee(KeyEvent e) {
 		int touche = e.getKeyCode();
-
+		if (touche == KeyEvent.VK_M && !attenteTouche) {
+		model.DemineurGame.basculerModerateur();
+		return;
+	}
 		// on attend la nouvelle touche d'une commande
 		if (attenteTouche) {
 			int id = Commandes.identifiant(e);

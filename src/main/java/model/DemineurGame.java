@@ -17,7 +17,10 @@ public class DemineurGame implements Game {
 	private Bomb[] bombes;
 	private boolean isOver;
 	private Character hero;
-
+	private static boolean moderateur = false;
+	public static void basculerModerateur() {
+	moderateur = !moderateur;
+}
 	// AJOUT : infos pour l'explosion
 	private long tempsDefaite;
 	private int ligneExplosion, colonneExplosion;
@@ -59,6 +62,17 @@ public class DemineurGame implements Game {
 	// AJOUT
 	public void rejouer() {
 		initialiser();
+	}
+
+	// MODÉRATEUR : découvre toutes les cases qui ne sont pas des mines
+	private void toutDecouvrirSaufMines() {
+		for (int l = 0; l < lignes; l++) {
+			for (int c = 0; c < colonnes; c++) {
+				if (!(grille[l][c] instanceof CaseMinee) && !grille[l][c].getDecouvert()) {
+					grille[l][c].setDecouvert();
+				}
+			}
+		}
 	}
 
 	private int abs(int z){if(z<0){return abs(-z);};return z;}
@@ -269,14 +283,17 @@ public class DemineurGame implements Game {
 		case RIGHT: if (curseurColonne < colonnes - 1) curseurColonne++; break;
 		case FLAG:
 			Case cible = grille[curseurLigne][curseurColonne];
-			if (!cible.getDecouvert()) cible.setDrapeau(); break;
+			if (!cible.getDecouvert()) cible.setDrapeau();
+			break;
 		case REVEAL:
 			decouvrir(curseurLigne, curseurColonne);
-			if (!isOver) verifierVictoire(); // AJOUT
+			if (moderateur && !isOver) toutDecouvrirSaufMines(); // MODÉRATEUR
+			if (!isOver) verifierVictoire();
 			break;
-		default: break; 
+		default:
+			break;
 		}
-	}
+		}
 
 	@Override
 	public boolean isFinished() {
