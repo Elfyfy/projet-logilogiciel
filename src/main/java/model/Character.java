@@ -35,6 +35,8 @@ public class Character {
             case RIGHT :
                 if (newColumn < this.game.getColonnes()) {newColumn--;}
                 else {return;}
+            default :
+                break;
         } Case newCase = this.game.getCase(newRow,newColumn);
         if (newCase.getAccessible() && newCase.getDrapeau()) {
             if (newCase.getDecouvert()) {
