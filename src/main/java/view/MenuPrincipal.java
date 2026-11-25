@@ -10,10 +10,11 @@ import model.Commandes;
 public class MenuPrincipal extends JDialog {
 
 	public static class Parametres {
-		public final int niveau, lignes, colonnes, nbMines;
+		public final int niveau, taille, lignes, colonnes, nbMines;
 
-		private Parametres(int niveau, int lignes, int colonnes, int nbMines) {
+		private Parametres(int niveau, int taille, int lignes, int colonnes, int nbMines) {
 			this.niveau = niveau;
+			this.taille = taille;
 			this.lignes = lignes;
 			this.colonnes = colonnes;
 			this.nbMines = nbMines;
@@ -24,7 +25,6 @@ public class MenuPrincipal extends JDialog {
 	private static final int[][] TAILLES = {{10, 15}, {15, 25}, {20, 35}};
 	private static final String[] NOMS_NIVEAU = {"FACILE", "MOYEN", "DIFFICILE"};
 	private static final double[] TAUX = {0.05, 0.15, 0.20};
-
 	// les trois écrans du menu
 	private static final int ACCUEIL = 0;   // JOUER / PARAMÈTRES / QUITTER
 	private static final int PARTIE = 1;    // taille et difficulté
@@ -35,12 +35,12 @@ public class MenuPrincipal extends JDialog {
 	private static int tailleMemo = 1;
 
 	// Retourne les dimensions correspondant à une taille
-	static int[] dimensionsPourTaille(int taille) {
+	public static final int[] dimensionsPourTaille(int taille) {
 		return TAILLES[taille].clone();
 	}
 
 	// Calcule le nombre de mines selon la taille et la difficulté
-	static int calculerNbMines(int lignes, int colonnes, int niveau) {
+	public static final int calculerNbMines(int lignes, int colonnes, int niveau) {
 		return Math.max(1, (int) (lignes * colonnes * TAUX[niveau]));
 	}
 
@@ -97,7 +97,7 @@ public class MenuPrincipal extends JDialog {
 		int lignes = dimensions[0];
 		int colonnes = dimensions[1];
 		int nbMines = calculerNbMines(lignes, colonnes, menu.niveau);
-		return new Parametres(menu.niveau, lignes, colonnes, nbMines);
+		return new Parametres(menu.niveau, menu.taille, lignes, colonnes, nbMines);
 	}
 
 	/** Le texte de chaque bouton, selon l'écran affiché. */
