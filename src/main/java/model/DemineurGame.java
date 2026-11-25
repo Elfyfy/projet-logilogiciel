@@ -16,6 +16,8 @@ public class DemineurGame implements Game {
 	private Chronometre chronometre; // MODIF : créé dans initialiser()
 	private CaseBombe[] bombes;
 	private boolean isOver;
+
+	// AJOUT : personnage
 	private Character hero;
 
 	// AJOUT : infos pour l'explosion
@@ -37,14 +39,15 @@ public class DemineurGame implements Game {
 	// AJOUT : (ré)initialise la partie, utilisée au démarrage et pour rejouer
 	private void initialiser() {
 		this.grille = new Case[lignes][colonnes];
+		// Initialisation du personnage
+		this.hero = new Character(0,0);
 		this.curseurLigne = 0;
 		this.curseurColonne = 0;
+		// Initialisation du Chronometre
 		this.chronometre = new Chronometre();
 		this.isOver = false;
 		this.isWon = false;       // AJOUT
 		this.retourMenu = false;  // AJOUT
-		Sprite[] sprites = new Sprite[1];
-		this.hero = new Character(this.curseurLigne,this.curseurColonne,sprites);
 
 		placerMines(nbMines,0,0); //pt de départ du joueur.euse
 		creerCasesLibres();
