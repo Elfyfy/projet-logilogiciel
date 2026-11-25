@@ -16,6 +16,20 @@ public class Bomb extends Tile {
         this.setSprites(tabSprites);
     }
 
+    // Methodes
+    public void countDown() {
+        if (this.fuse == 0) {
+
+        } else {
+            this.fuse--;
+        }
+    }
+
+    public void explode() {
+        
+    }
+
+    // Getter et setter
     public int getFuse() {return this.fuse;}
     public void setFuse(int fuse) {this.fuse = fuse;}
     public int[][] getShape() {return this.shape;}
