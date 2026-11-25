@@ -25,10 +25,6 @@ public class Bomb extends Tile {
         }
     }
 
-    public void explode() {
-        
-    }
-
     // Getter et setter
     public int getFuse() {return this.fuse;}
     public void setFuse(int fuse) {this.fuse = fuse;}
