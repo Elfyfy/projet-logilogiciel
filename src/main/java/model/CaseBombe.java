@@ -18,7 +18,7 @@ public class CaseBombe extends Case {
     // Methodes
     public void countDown() {
         if (this.delai == 0) {
-
+            this.active = true;
         } else {
             this.delai--;
         }

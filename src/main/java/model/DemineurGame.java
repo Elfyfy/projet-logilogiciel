@@ -14,7 +14,7 @@ public class DemineurGame implements Game {
 	private int curseurColonne = 0;
 	private int nbMines; 
 	private Chronometre chronometre; // MODIF : créé dans initialiser()
-	private Bomb[] bombes;
+	private CaseBombe[] bombes;
 	private boolean isOver;
 	private Character hero;
 
@@ -40,8 +40,6 @@ public class DemineurGame implements Game {
 		this.curseurLigne = 0;
 		this.curseurColonne = 0;
 		this.chronometre = new Chronometre();
-		this.bombes = new Bomb[1];
-		this.bombes[0] = new Bomb(lignes,colonnes,null,1,null);
 		this.isOver = false;
 		this.isWon = false;       // AJOUT
 		this.retourMenu = false;  // AJOUT
