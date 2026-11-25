@@ -227,7 +227,7 @@ public class DemineurGame implements Game {
 	public int getNbMines() { return nbMines; }
 	public int getMinesRestantes() { return nbMines - getNbDrapeaux(); }
 	public int getNbDrapeaux() { return NbDrapeaux(); }
-	public Bomb[] getBomb() {return this.bombes;}
+	public CaseBombe[] getBomb() {return this.bombes;}
 	public int getNbBombes() {return this.bombes.length;}
 	public boolean getIsOver() {return this.isOver;}
 	public Character getHero() {return this.hero;}
