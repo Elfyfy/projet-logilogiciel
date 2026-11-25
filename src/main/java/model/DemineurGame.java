@@ -40,7 +40,7 @@ public class DemineurGame implements Game {
 	private void initialiser() {
 		this.grille = new Case[lignes][colonnes];
 		// Initialisation du personnage
-		this.hero = new Character(0,0);
+		this.hero = new Character(0,0,this);
 		this.curseurLigne = 0;
 		this.curseurColonne = 0;
 		// Initialisation du Chronometre
@@ -193,7 +193,7 @@ public class DemineurGame implements Game {
 		}
 	}
 
-	// AJOUT : victoire si toutes les cases non minées sont découvertes
+	// AJOUT : victoire si toutes les cases non minées sont découvertes (plus tard si toutes les bombes ont explosés)
 	private void verifierVictoire() {
 		for (int l = 0; l < lignes; l++) {
 			for (int c = 0; c < colonnes; c++) {
@@ -259,10 +259,22 @@ public class DemineurGame implements Game {
 		}
 
 		switch (cmd) {
-		case UP:    if (curseurLigne > 0) curseurLigne--; break;
-		case DOWN:  if (curseurLigne < lignes - 1) curseurLigne++; break;
-		case LEFT:  if (curseurColonne > 0) curseurColonne--; break;
-		case RIGHT: if (curseurColonne < colonnes - 1) curseurColonne++; break;
+		case UP:
+			if (curseurLigne > 0) {
+				curseurLigne--;	break;
+			}
+		case DOWN:
+			if (curseurLigne < lignes - 1) {
+				curseurLigne++; break;
+			}
+		case LEFT:
+			if (curseurColonne > 0) {
+				curseurColonne--; break;
+			}
+		case RIGHT:
+			if (curseurColonne < colonnes - 1) {
+				curseurColonne++; break;
+			}
 		case FLAG:
 			Case cible = grille[curseurLigne][curseurColonne];
 			if (!cible.getDecouvert()) cible.setDrapeau(); break;

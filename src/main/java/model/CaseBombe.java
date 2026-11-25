@@ -8,7 +8,7 @@ public class CaseBombe extends Case {
     private boolean blown;
 
     public CaseBombe(int x,int y,String affichage,int delai,int[][] zone) {
-        super(false,x,y,affichage);
+        super(true,x,y,affichage);
         this.delai = delai;
         this.zone = zone;
         this.active = false;
