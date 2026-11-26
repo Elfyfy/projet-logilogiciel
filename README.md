@@ -2,7 +2,7 @@
 
 ## 1. Présentation du projet
 
-**Démineur-Bombeur** : un jeu de démineur dans lequel le joueur doit **passer de niveau en niveau**. Chaque niveau se joue sur un plateau (de 10×15 à 20×35 cases, 15×25 par défaut) contenant des mines “classiques” de démineur, ainsi que des **bombes à retardement** : une fois déclenchée, une bombe explose après un compte à rebours et crée une zone d'explosion que le personnage doit fuir à temps.
+**Démineur-Bombeur** : un jeu de démineur dans lequel le joueur doit passer de niveau en niveau. Chaque niveau se joue sur un plateau (de 10×15 à 20×35 cases, 15×25 par défaut) contenant des mines “classiques” de démineur, ainsi que des bombes à retardement : une fois déclenchée, une bombe explose après un compte à rebours et crée une zone d'explosion que le personnage doit fuir à temps.
 
 Le joueur perd s'il découvre une mine ou s'il est pris dans une explosion. Il gagne le niveau en découvrant toutes les cases sûres (et, selon les niveaux, en déclenchant les bombes requises). La difficulté augmente progressivement d'un niveau à l'autre : taille de la carte, nombre de mines et bombes présentes.
 
@@ -28,7 +28,7 @@ Commandes par défaut :
 
 ### Modifier les commandes
 
-Les touches de déplacement, de drapeau et de creusage sont **personnalisables** : depuis le menu principal, ouvrir **PARAMÈTRES**, sélectionner l'action à modifier puis appuyer sur la nouvelle touche (les flèches directionnelles sont utilisables). Si la touche choisie est déjà utilisée par une autre action, les deux actions échangent leurs touches. Le bouton **RÉINITIALISER** rétablit les commandes par défaut.
+Les touches de déplacement, de drapeau et de creusage sont personnalisables : depuis le menu principal, ouvrir **PARAMÈTRES**, sélectionner l'action à modifier puis appuyer sur la nouvelle touche (les flèches directionnelles sont utilisables). Si la touche choisie est déjà utilisée par une autre action, les deux actions échangent leurs touches. Le bouton **RÉINITIALISER** rétablit les commandes par défaut.
 
 Les touches `R` (rejouer) et `échap` (menu) ne sont pas modifiables.
 
