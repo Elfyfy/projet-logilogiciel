@@ -4,6 +4,7 @@ import java.util.Random;
 
 import engine.Cmd;
 import engine.Game;
+import engine.SoundManager;
 
 public class DemineurGame implements Game {
 
@@ -196,6 +197,7 @@ public class DemineurGame implements Game {
 	// AJOUT : défaite = on mémorise où et quand, puis on révèle toutes les mines
 	private void declencherDefaite(int l, int c) {
 		isOver = true;
+		SoundManager.playSound("explosion.wav");
 		chronometre.arreter();
 		tempsDefaite = System.currentTimeMillis();
 		ligneExplosion = l;
