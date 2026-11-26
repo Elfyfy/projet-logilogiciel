@@ -14,7 +14,7 @@ public class CharacterTest {
 
         assertEquals(2, character.getRow());
         assertEquals(5, character.getColumn());
-        assertSame(DemineurPainter.spriteGilet, character.getSprites());
+        assertSame(DemineurPainter.spriteGilet, character.getSprite());
         assertEquals(Cmd.IDLE, character.getDir());
     }
 
@@ -69,15 +69,15 @@ public class CharacterTest {
     void testGetSprites() {
         Character character = new Character(0, 0, null);
 
-        assertSame(DemineurPainter.spriteGilet, character.getSprites());
+        assertSame(DemineurPainter.spriteGilet, character.getSprite());
     }
 
     @Test
     void testSetSprites() {
         Character character = new Character(0, 0, null);
 
-        character.setSprites(DemineurPainter.spriteFlag);
+        character.setSprite(DemineurPainter.spriteFlag);
 
-        assertSame(DemineurPainter.spriteFlag, character.getSprites());
+        assertSame(DemineurPainter.spriteFlag, character.getSprite());
     }
 }

@@ -59,8 +59,8 @@ public class Character {
     public void setColumn(int c) {this.column = c;}
     public Cmd getDir() {return this.dir;}
     public void setDir(Cmd d) {this.dir = d;}
-    public Sprite getSprites() {return this.sprite;}
-    public void setSprites(Sprite sprite) {this.sprite = sprite;}
+    public Sprite getSprite() {return this.sprite;}
+    public void setSprite(Sprite sprite) {this.sprite = sprite;}
 
     public DemineurGame getGame() {return this.game;}
 }
