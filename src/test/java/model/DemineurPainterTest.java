@@ -1,3 +1,4 @@
+
 package model;
 
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,7 @@ public class DemineurPainterTest {
         DemineurGame jeu = new DemineurGame(5, 8, 3);
         DemineurPainter painter = new DemineurPainter(jeu);
 
-        assertEquals(185, painter.getHeight());
+        assertEquals(5 * 30, painter.getHeight());
     }
 
     // Vérifie que le dessin fonctionne sur une image

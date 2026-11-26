@@ -65,9 +65,6 @@ public class GameEngineGraphical {
 			// met en attente
 			Thread.sleep(100);
 		}
-
-		// AJOUT : fin de partie -> on ferme la fenêtre de jeu, Main réaffiche le menu
-		this.gui.close();
 	}
 
 }
