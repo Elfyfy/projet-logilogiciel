@@ -28,7 +28,19 @@ public class DemineurGame implements Game {
 	private boolean retourMenu; // AJOUT : Échap -> retour au menu
 	private boolean niveauSuivant;
 	private boolean niveauSuivantPossible;
-
+	private static boolean moderateur = false;
+	public static void basculerModerateur() {
+		moderateur = !moderateur;
+	}
+	private void toutDecouvrirSaufMines() {
+		for (int l = 0; l < lignes; l++) {
+			for (int c = 0; c < colonnes; c++) {
+				if (!(grille[l][c] instanceof CaseMinee) && !grille[l][c].getDecouvert()) {
+					grille[l][c].setDecouvert();
+				}
+			}
+		}
+	}
 	public DemineurGame(int lignes, int colonnes, int nbMines) {
 		this.lignes = lignes;
 		this.colonnes = colonnes;
@@ -263,19 +275,22 @@ public class DemineurGame implements Game {
 }
 
 		switch (cmd) {
-		case UP:    if (curseurLigne > 0) curseurLigne--; break;
-		case DOWN:  if (curseurLigne < lignes - 1) curseurLigne++; break;
-		case LEFT:  if (curseurColonne > 0) curseurColonne--; break;
-		case RIGHT: if (curseurColonne < colonnes - 1) curseurColonne++; break;
-		case FLAG:
-			Case cible = grille[curseurLigne][curseurColonne];
-			if (!cible.getDecouvert()) cible.setDrapeau(); break;
-		case REVEAL:
-			decouvrir(curseurLigne, curseurColonne);
-			if (!isOver) verifierVictoire(); // AJOUT
-			break;
-		default: break; 
-		}
+			case UP:    if (curseurLigne > 0) curseurLigne--; break;
+			case DOWN:  if (curseurLigne < lignes - 1) curseurLigne++; break;
+			case LEFT:  if (curseurColonne > 0) curseurColonne--; break;
+			case RIGHT: if (curseurColonne < colonnes - 1) curseurColonne++; break;
+			case FLAG:
+				Case cible = grille[curseurLigne][curseurColonne];
+				if (!cible.getDecouvert()) cible.setDrapeau();
+				break;
+			case REVEAL:
+				decouvrir(curseurLigne, curseurColonne);
+				if (moderateur && !isOver) toutDecouvrirSaufMines(); // MODÉRATEUR
+				if (!isOver) verifierVictoire();
+				break;
+			default:
+				break; // IDLE, REJOUER, MENU, SUIVANT, MODO : rien à faire pendant la partie
+			}
 	}
 
 	@Override
