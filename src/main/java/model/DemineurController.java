@@ -7,51 +7,53 @@ import engine.GameController;
 
 public class DemineurController implements GameController {
 
+	private volatile Cmd commandeEnCours;
 
-	private Cmd commandeEnCours;
-	
 	public DemineurController() {
 		this.commandeEnCours = Cmd.IDLE;
 	}
 
+	@Override
 	public Cmd getCommand() {
-		return this.commandeEnCours;
+		Cmd commande = this.commandeEnCours;
+		// FLAG, REVEAL, REJOUER, MENU et SUIVANT sont consommées une seule fois
+		if (commande == Cmd.FLAG || commande == Cmd.REVEAL
+				|| commande == Cmd.REJOUER || commande == Cmd.MENU
+				|| commande == Cmd.SUIVANT) {
+			this.commandeEnCours = Cmd.IDLE;
+		}
+		return commande;
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-
-		switch (e.getKeyChar()) {
-		case 'z':
-			this.commandeEnCours = Cmd.UP;
-			break;
-		case 's':
-			this.commandeEnCours = Cmd.DOWN;
-			break;
-		case 'q':
-			this.commandeEnCours = Cmd.LEFT;
-			break;
-		case 'd':
-			this.commandeEnCours = Cmd.RIGHT;
-			break;
-		case 'f':
-			this.commandeEnCours = Cmd.FLAG;
-			break;
-		case ' ':
-			this.commandeEnCours = Cmd.REVEAL;
-			break;
-			}
-
+		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+			this.commandeEnCours = Cmd.MENU;
+			return;
+		}
+		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+			this.commandeEnCours = Cmd.SUIVANT;
+			return;
+		}
+		Cmd action = Commandes.getAction(Commandes.identifiant(e));
+		if (action != null) {
+			this.commandeEnCours = action;
+		} else if (e.getKeyCode() == KeyEvent.VK_R) {
+			this.commandeEnCours = Cmd.REJOUER;
+		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		this.commandeEnCours = Cmd.IDLE;
+		// ne pas écraser une commande pas encore lue par le moteur (boucle de 100 ms)
+		if (this.commandeEnCours != Cmd.MENU && this.commandeEnCours != Cmd.REJOUER
+				&& this.commandeEnCours != Cmd.SUIVANT) {
+			this.commandeEnCours = Cmd.IDLE;
+		}
 	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-
 	}
 
 }

@@ -8,6 +8,8 @@ public class Case {
     private int coordY;
     private String sprite;
 
+    private DemineurGame game;
+
     // Constructeurs de la classe
     public Case(boolean acces,int x,int y,String affichage) {
         decouvert = false;
@@ -19,24 +21,14 @@ public class Case {
     }
 
     // Getter des attributs
-    public boolean getDecouvert() {
-        return decouvert;
-    }
-    public boolean getAccessible() {
-        return accessible;
-    }
-    public boolean getDrapeau() {
-        return drapeau; 
-    }
-    public int getCoordX() {
-        return coordX;
-    }
-    public int getCoordY() {
-        return coordY;
-    }
-    public String getSprite() {
-        return sprite;
-    }
+    public boolean getDecouvert() {return decouvert;}
+    public boolean getAccessible() {return accessible;}
+    public boolean getDrapeau() {return drapeau;}
+    public int getCoordX() {return coordX;}
+    public int getCoordY() {return coordY;}
+    public String getSprite() {return sprite;}
+
+    public DemineurGame getGame() {return this.game;}
    
     // Setter des attributs
     public void setDecouvert() {

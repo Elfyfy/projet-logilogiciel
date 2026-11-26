@@ -1,50 +1,50 @@
 package engine;
 
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+
 import javax.swing.JFrame;
 
+public class GraphicalInterface {
 
-/**
- * @author Horatiu Cirstea, Vincent Thomas
- *
- * interface graphique avec son controller et son afficheur
- *
- */
-public class GraphicalInterface  {
-
-	/**
-	 * le Panel pour l'afficheur
-	 */
 	private DrawingPanel panel;
-	
-	/**
-	 * la construction de l'interface graphique: JFrame avec panel pour le game
-	 * 
-	 * @param gamePainter l'afficheur a utiliser dans le moteur
-	 * @param gameController l'afficheur a utiliser dans le moteur
-	 * 
-	 */
-	public GraphicalInterface(GamePainter gamePainter, GameController gameController){
-		JFrame f=new JFrame();
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		// attacher le panel contenant l'afficheur du game
-		this.panel=new DrawingPanel(gamePainter);
-		f.setContentPane(this.panel);
-		
-		// attacher controller au panel du game
-		this.panel.addKeyListener(gameController);	
-		
-		f.pack();
-		f.setVisible(true);
-		f.getContentPane().setFocusable(true);
-		f.getContentPane().requestFocus();
+	private JFrame frame;        // AJOUT : on garde la fenêtre pour pouvoir la fermer
+	private GraphicsDevice ecran; // AJOUT
+
+	public GraphicalInterface(GamePainter gamePainter, GameController gameController) {
+		this.frame = new JFrame();
+		this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.frame.setUndecorated(true);
+
+		this.panel = new DrawingPanel(gamePainter);
+		this.frame.setContentPane(this.panel);
+
+		this.panel.addKeyListener(gameController);
+		// MODIF : l'ancien KeyListener qui faisait System.exit(0) sur Échap est supprimé,
+		// Échap est maintenant gérée par le contrôleur (Cmd.MENU)
+
+		this.ecran = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+		if (this.ecran.isFullScreenSupported()) {
+			this.ecran.setFullScreenWindow(this.frame);
+		} else {
+			this.frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+			this.frame.setVisible(true);
+		}
+
+		this.frame.getContentPane().setFocusable(true);
+		this.frame.getContentPane().requestFocus();
 	}
-	
-	/**
-	 * mise a jour du dessin
-	 */
+
 	public void paint() {
-		this.panel.drawGame();	
+		this.panel.drawGame();
 	}
-	
+
+	// AJOUT : ferme la fenêtre de jeu (pour revenir au menu)
+	public void close() {
+		if (this.ecran.getFullScreenWindow() == this.frame) {
+			this.ecran.setFullScreenWindow(null);
+		}
+		this.frame.dispose();
+	}
+
 }

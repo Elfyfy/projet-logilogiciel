@@ -1,5 +1,6 @@
 package engine;
 
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 /**
@@ -22,5 +23,8 @@ public interface GamePainter {
 	public abstract int getWidth();
 
 	public abstract int getHeight();
+
+	public default void dessinerFond(Graphics2D g, int largeurEcran, int hauteurEcran, int xJeu, int largeurJeu) {
+	}
 	
 }
