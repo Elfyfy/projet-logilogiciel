@@ -196,7 +196,7 @@ public class DemineurGame implements Game {
 	}
 
 	// AJOUT : défaite = on mémorise où et quand, puis on révèle toutes les mines
-	private void declencherDefaite(int l, int c) {
+	public void declencherDefaite(int l, int c) {
 		isOver = true;
 		chronometre.arreter();
 		tempsDefaite = System.currentTimeMillis();

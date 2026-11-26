@@ -25,12 +25,16 @@ public class CaseBombe extends Case {
     }
 
     public void explose() {
-        /* Pour toutes les cases de la zone :
-                Si le hero est dans la case :ù
-                    declencher defaite
-        Passer l'attribut blown à true
-        */
-        this.setBlown(true);
+       int n = this.zone.length;
+       int x=this.getCoordX(), y=this.getCoordY();
+       for (int i = 0; i < n; i++) {
+            int dx=this.zone[i][0], dy = this.zone[i][1];
+            Character hero = this.getGame().getHero();
+            if (x+dx == hero.getRow() && y+dy == hero.getColumn()) {
+                this.getGame().declencherDefaite(x+dx,y+dy);
+            }
+       }
+       this.setBlown(true);
     }
 
     // Getter et setter
