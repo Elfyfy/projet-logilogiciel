@@ -13,6 +13,7 @@ public class Main {
 
 		MenuPrincipal.Parametres choix;
 		while ((choix = MenuPrincipal.afficher()) != null) {
+			// niveau : 0 facile, 1 moyen, 2 difficile / taille : 0 petite, 1 moyenne, 2 grande
 			int niveau = choix.niveau;
 			int taille = choix.taille;
 			boolean enchainer = true;
@@ -29,6 +30,7 @@ public class Main {
 				new GameEngineGraphical(game, painter, controller).run();
 
 				if (game.getNiveauSuivant()) {
+					// ordre : petite -> moyenne -> grande, puis on passe à la difficulté supérieure
 					taille++;
 					if (taille > 2) {
 						taille = 0;
