@@ -10,26 +10,24 @@ public class CharacterTest {
 
     @Test
     void testConstructeur() {
-        Sprite[] sprites = new Sprite[4];
-
-        Character character = new Character(2, 5, sprites);
+        Character character = new Character(2, 5, null);
 
         assertEquals(2, character.getRow());
         assertEquals(5, character.getColumn());
-        assertSame(sprites, character.getSprites());
+        assertSame(DemineurPainter.spriteGilet, character.getSprites());
         assertEquals(Cmd.IDLE, character.getDir());
     }
 
     @Test
     void testGetRow() {
-        Character character = new Character(3, 4, new Sprite[0]);
+        Character character = new Character(3, 4, null);
 
         assertEquals(3, character.getRow());
     }
 
     @Test
     void testSetRow() {
-        Character character = new Character(0, 0, new Sprite[0]);
+        Character character = new Character(0, 0, null);
 
         character.setRow(7);
 
@@ -38,14 +36,14 @@ public class CharacterTest {
 
     @Test
     void testGetColumn() {
-        Character character = new Character(3, 6, new Sprite[0]);
+        Character character = new Character(3, 6, null);
 
         assertEquals(6, character.getColumn());
     }
 
     @Test
     void testSetColumn() {
-        Character character = new Character(0, 0, new Sprite[0]);
+        Character character = new Character(0, 0, null);
 
         character.setColumn(8);
 
@@ -54,14 +52,14 @@ public class CharacterTest {
 
     @Test
     void testGetDir() {
-        Character character = new Character(0, 0, new Sprite[0]);
+        Character character = new Character(0, 0, null);
 
         assertEquals(Cmd.IDLE, character.getDir());
     }
 
     @Test
     void testSetDir() {
-        Character character = new Character(0, 0, new Sprite[0]);
+        Character character = new Character(0, 0, null);
 
         character.setDir(Cmd.IDLE);
         assertEquals(Cmd.IDLE, character.getDir());
@@ -69,20 +67,17 @@ public class CharacterTest {
 
     @Test
     void testGetSprites() {
-        Sprite[] sprites = new Sprite[4];
+        Character character = new Character(0, 0, null);
 
-        Character character = new Character(0, 0, sprites);
-
-        assertSame(sprites, character.getSprites());
+        assertSame(DemineurPainter.spriteGilet, character.getSprites());
     }
 
     @Test
     void testSetSprites() {
-        Character character = new Character(0, 0, new Sprite[0]);
-        Sprite[] newSprites = new Sprite[6];
+        Character character = new Character(0, 0, null);
 
-        character.setSprites(newSprites);
+        character.setSprites(DemineurPainter.spriteFlag);
 
-        assertSame(newSprites, character.getSprites());
+        assertSame(DemineurPainter.spriteFlag, character.getSprites());
     }
 }
