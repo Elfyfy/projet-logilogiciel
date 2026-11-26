@@ -24,6 +24,15 @@ public class CaseBombe extends Case {
         }
     }
 
+    public void explose() {
+        /* Pour toutes les cases de la zone :
+                Si le hero est dans la case :ù
+                    declencher defaite
+        Passer l'attribut blown à true
+        */
+        this.setBlown(true);
+    }
+
     // Getter et setter
     public int getDelai() {return this.delai;}
     public void setDelai(int dt) {this.delai = dt;}
