@@ -11,8 +11,10 @@ public class MenuPrincipal extends JDialog {
 
 	public static class Parametres {
 		public final int niveau, taille, lignes, colonnes, nbMines;
+		public final boolean pleinEcran; // mode d'affichage choisi dans le menu
 
-		private Parametres(int niveau, int taille, int lignes, int colonnes, int nbMines) {
+		private Parametres(int niveau, int taille, int lignes, int colonnes, int nbMines, boolean pleinEcran) {
+			this.pleinEcran = pleinEcran;
 			this.niveau = niveau;
 			this.taille = taille;
 			this.lignes = lignes;
@@ -25,14 +27,28 @@ public class MenuPrincipal extends JDialog {
 	private static final int[][] TAILLES = {{10, 15}, {15, 25}, {20, 35}};
 	private static final String[] NOMS_NIVEAU = {"FACILE", "MOYEN", "DIFFICILE"};
 	private static final double[] TAUX = {0.05, 0.15, 0.20};
-	// les trois écrans du menu
-	private static final int ACCUEIL = 0;   // JOUER / PARAMÈTRES / QUITTER
-	private static final int PARTIE = 1;    // taille et difficulté
-	private static final int COMMANDES = 2; // choix des touches
+	// les écrans du menu
+	private static final int ACCUEIL = 0;    // JOUER / PARAMÈTRES / QUITTER
+	private static final int PARTIE = 1;     // taille et difficulté
+	private static final int COMMANDES = 2;  // choix des touches
+	private static final int PARAMETRES = 3; // COMMANDES / AFFICHAGE / VOLUME
+	private static final int AFFICHAGE = 4;  // fenêtré / plein écran
+	private static final int VOLUME = 5;     // volume du son
+	private static final int PAS_VOLUME = 10;
 
 	// on retient les derniers choix du joueur
 	private static int niveauMemo = 0;
 	private static int tailleMemo = 1;
+	private static boolean pleinEcranMemo = true;
+
+	// taille de la fenêtre en mode fenêtré
+	private static final int LARGEUR_FENETRE = 1000;
+	private static final int HAUTEUR_FENETRE = 700;
+
+	/** Dernier mode d'affichage choisi (true : plein écran, false : fenêtré). */
+	public static boolean isPleinEcran() {
+		return pleinEcranMemo;
+	}
 
 	// Retourne les dimensions correspondant à une taille
 	public static final int[] dimensionsPourTaille(int taille) {
@@ -45,15 +61,25 @@ public class MenuPrincipal extends JDialog {
 	}
 
 	private int ecran = ACCUEIL;
-	private int ligne = 0;                  // bouton sélectionné
+	private int ligne = 0;
 	private int niveau = niveauMemo;
 	private int taille = tailleMemo;
+	private boolean pleinEcran = pleinEcranMemo;
+	private boolean reconstruire = false;
 	private boolean lancer = false;
-	private boolean attenteTouche = false;  // true quand on attend la nouvelle touche
+	private boolean attenteTouche = false;
 	private Image fond;
 
-	private MenuPrincipal() {
+	private MenuPrincipal(MenuPrincipal precedent) {
 		super((Frame) null, "Démineur", true);
+
+		if (precedent != null) {
+			this.ecran = precedent.ecran;
+			this.ligne = precedent.ligne;
+			this.niveau = precedent.niveau;
+			this.taille = precedent.taille;
+			this.pleinEcran = precedent.pleinEcran;
+		}
 
 		URL url = MenuPrincipal.class.getResource("/images/menu_fond.png");
 		if (url != null) fond = new ImageIcon(url).getImage();
@@ -79,16 +105,30 @@ public class MenuPrincipal extends JDialog {
 			}
 		});
 
-		// plein écran : fenêtre sans bordure de la taille de l'écran
-		setUndecorated(true);
 		setContentPane(panneau);
-		setBounds(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
+		if (pleinEcran) {
+			setUndecorated(true);
+			setBounds(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
+		} else {
+			Rectangle utile = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+			panneau.setPreferredSize(new Dimension(
+					Math.min(LARGEUR_FENETRE, utile.width - 40),
+					Math.min(HAUTEUR_FENETRE, utile.height - 60)));
+			setResizable(true);
+			setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+			pack();
+			setLocationRelativeTo(null);
+		}
 	}
 
-	/** Affiche le menu. Renvoie les paramètres de la partie, ou null si on quitte. */
 	public static Parametres afficher() {
-		MenuPrincipal menu = new MenuPrincipal();
-		menu.setVisible(true); // bloque jusqu'à dispose()
+		MenuPrincipal menu = new MenuPrincipal(null);
+		menu.setVisible(true);
+		while (menu.reconstruire) {
+			menu = new MenuPrincipal(menu);
+			menu.setVisible(true);
+		}
+		pleinEcranMemo = menu.pleinEcran;
 
 		if (!menu.lancer) return null;
 		niveauMemo = menu.niveau;
@@ -97,13 +137,29 @@ public class MenuPrincipal extends JDialog {
 		int lignes = dimensions[0];
 		int colonnes = dimensions[1];
 		int nbMines = calculerNbMines(lignes, colonnes, menu.niveau);
-		return new Parametres(menu.niveau, menu.taille, lignes, colonnes, nbMines);
+		return new Parametres(menu.niveau, menu.taille, lignes, colonnes, nbMines, menu.pleinEcran);
 	}
 
-	/** Le texte de chaque bouton, selon l'écran affiché. */
 	private String[] boutons() {
 		if (ecran == ACCUEIL) {
 			return new String[] {"JOUER", "PARAMÈTRES", "QUITTER"};
+		}
+
+		if (ecran == PARAMETRES) {
+			return new String[] {"COMMANDES", "AFFICHAGE", "VOLUME", "RETOUR"};
+		}
+
+		if (ecran == AFFICHAGE) {
+			return new String[] {
+				(pleinEcran ? "FENÊTRÉ" : "FENÊTRÉ  (actuel)"),
+				(pleinEcran ? "PLEIN ÉCRAN  (actuel)" : "PLEIN ÉCRAN"),
+				"RETOUR"
+			};
+		}
+
+		if (ecran == VOLUME) {
+			int v = engine.SoundManager.getVolume();
+			return new String[] {"VOLUME :  < " + v + " % >", "RETOUR"};
 		}
 
 		if (ecran == PARTIE) {
@@ -138,7 +194,6 @@ public class MenuPrincipal extends JDialog {
 			return;
 		}
 
-		// on attend la nouvelle touche d'une commande
 		if (attenteTouche) {
 			int id = Commandes.identifiant(e);
 			if (touche == KeyEvent.VK_ESCAPE) {
@@ -164,6 +219,14 @@ public class MenuPrincipal extends JDialog {
 		} else if (touche == KeyEvent.VK_ESCAPE) {
 			if (ecran == ACCUEIL) {
 				dispose();
+			} else if (ecran == COMMANDES) {
+				allerVers(PARAMETRES, 0);
+			} else if (ecran == AFFICHAGE) {
+				allerVers(PARAMETRES, 1);
+			} else if (ecran == VOLUME) {
+				allerVers(PARAMETRES, 2);
+			} else if (ecran == PARAMETRES) {
+				allerVers(ACCUEIL, 1);
 			} else {
 				allerVers(ACCUEIL, 0);
 			}
@@ -175,8 +238,18 @@ public class MenuPrincipal extends JDialog {
 		ligne = nouvelleLigne;
 	}
 
-	// change la taille ou la difficulté (uniquement sur l'écran PARTIE)
+	private void definirAffichage(boolean plein) {
+		if (plein == pleinEcran) return;
+		pleinEcran = plein;
+		reconstruire = true;
+		dispose();
+	}
+
 	private void changer(int sens) {
+		if (ecran == VOLUME && ligne == 0) {
+			engine.SoundManager.setVolume(engine.SoundManager.getVolume() + sens * PAS_VOLUME);
+			return;
+		}
 		if (ecran != PARTIE) return;
 		if (ligne == 0) taille = (taille + sens + 3) % 3;
 		if (ligne == 1) niveau = (niveau + sens + 3) % 3;
@@ -187,17 +260,44 @@ public class MenuPrincipal extends JDialog {
 			if (ligne == 0) {
 				allerVers(PARTIE, 2);      // JOUER -> réglages, curseur sur LANCER
 			} else if (ligne == 1) {
-				allerVers(COMMANDES, 0);   // PARAMÈTRES -> commandes
+				allerVers(PARAMETRES, 0);  // PARAMÈTRES -> sous-menu
 			} else {
 				dispose();                 // QUITTER
 			}
 
+		} else if (ecran == PARAMETRES) {
+			if (ligne == 0) {
+				allerVers(COMMANDES, 0);   // COMMANDES -> choix des touches
+			} else if (ligne == 1) {
+				allerVers(AFFICHAGE, pleinEcran ? 1 : 0); // curseur sur le mode actuel
+			} else if (ligne == 2) {
+				allerVers(VOLUME, 0);
+			} else {
+				allerVers(ACCUEIL, 1);     // RETOUR
+			}
+
+		} else if (ecran == AFFICHAGE) {
+			if (ligne == 0) {
+				definirAffichage(false);   // FENÊTRÉ
+			} else if (ligne == 1) {
+				definirAffichage(true);    // PLEIN ÉCRAN
+			} else {
+				allerVers(PARAMETRES, 1);  // RETOUR
+			}
+
+		} else if (ecran == VOLUME) {
+			if (ligne == 0) {
+				changer(1);
+			} else {
+				allerVers(PARAMETRES, 2);
+			}
+
 		} else if (ecran == PARTIE) {
 			if (ligne == 2) {
-				lancer = true;             // LANCER
+				lancer = true;
 				dispose();
 			} else if (ligne == 3) {
-				allerVers(ACCUEIL, 0);     // RETOUR
+				allerVers(ACCUEIL, 0);   
 			} else {
 				changer(1);
 			}
@@ -205,29 +305,26 @@ public class MenuPrincipal extends JDialog {
 		} else {
 			int n = Commandes.ACTIONS.length;
 			if (ligne < n) {
-				attenteTouche = true;      // on va lire la nouvelle touche
+				attenteTouche = true;
 			} else if (ligne == n) {
-				Commandes.reinitialiser(); // RÉINITIALISER
+				Commandes.reinitialiser();
 			} else {
-				allerVers(ACCUEIL, 1);     // RETOUR (curseur sur PARAMÈTRES)
+				allerVers(PARAMETRES, 0);  
 			}
 		}
 	}
 
 	private void dessiner(Graphics g, int w, int h) {
-		// fond : l'image étirée sur tout l'écran, puis un voile sombre
 		if (fond != null) {
 			g.drawImage(fond, 0, 0, w, h, null);
 		}
 		g.setColor(new Color(0, 0, 0, 140));
 		g.fillRect(0, 0, w, h);
 
-		// titre
 		g.setFont(new Font("SansSerif", Font.BOLD, h / 10));
 		g.setColor(Color.WHITE);
 		texteCentre(g, "DÉMINEUR", w, h / 5);
 
-		// boutons : la place disponible est partagée entre tous les boutons
 		String[] textes = boutons();
 		int largeur = w / 2;
 		int pas = Math.min(h / 9, (h * 6 / 10) / textes.length);
@@ -245,7 +342,6 @@ public class MenuPrincipal extends JDialog {
 			texteCentre(g, textes[i], w, y + hauteur / 2 + h / 90);
 		}
 
-		// aide en bas
 		g.setFont(new Font("SansSerif", Font.PLAIN, h / 60));
 		g.setColor(new Color(200, 190, 170));
 		texteCentre(g, aide(), w, h - h / 30);
@@ -259,6 +355,15 @@ public class MenuPrincipal extends JDialog {
 		}
 		if (ecran == PARTIE) {
 			return "Z / S : naviguer      Q / D : modifier      ESPACE : valider      ECHAP : retour";
+		}
+		if (ecran == VOLUME) {
+			return "Z / S : naviguer      Q / D : modifier le volume      ECHAP : retour";
+		}
+		if (ecran == AFFICHAGE) {
+			return "Z / S : naviguer      ESPACE : choisir le mode      ECHAP : retour";
+		}
+		if (ecran == PARAMETRES) {
+			return "Z / S : naviguer      ESPACE : valider      ECHAP : retour";
 		}
 		return "Z / S : naviguer      ESPACE : valider      ECHAP : quitter";
 	}

@@ -66,7 +66,8 @@ public class DrawingPanel extends JPanel {
 		}
 		g2.drawImage(fond, 0, 0, null);
 
-		double echelle = Math.max(1.0, Math.min((w - 80.0) / width, (h - 80.0) / height));
+		// le plateau s'adapte a la fenetre (agrandi ou reduit), y compris en mode fenetre
+		double echelle = Math.max(0.2, Math.min((w - 80.0) / width, (h - 80.0) / height));
 		int lw = (int) (width * echelle);
 		int lh = (int) (height * echelle);
 		int x = (w - lw) / 2;

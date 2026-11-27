@@ -29,6 +29,11 @@ public class GameEngineGraphical {
 	private GraphicalInterface gui;
 
 	/**
+	 * true : plein ecran / false : fenetre normale
+	 */
+	private boolean pleinEcran = true;
+
+	/**
 	 * construit un moteur
 	 * 
 	 * @param game
@@ -47,15 +52,26 @@ public class GameEngineGraphical {
 	}
 
 	/**
+	 * construit un moteur en precisant le mode d'affichage
+	 *
+	 * @param pleinEcran
+	 *            true pour le plein ecran, false pour une fenetre
+	 */
+	public GameEngineGraphical(Game game, GamePainter gamePainter, GameController gameController, boolean pleinEcran) {
+		this(game, gamePainter, gameController);
+		this.pleinEcran = pleinEcran;
+	}
+
+	/**
 	 * permet de lancer le game
 	 */
 	public void run() throws InterruptedException {
 
 		// creation de l'interface graphique
-		this.gui = new GraphicalInterface(this.gamePainter,this.gameController);
+		this.gui = new GraphicalInterface(this.gamePainter, this.gameController, this.pleinEcran);
 
 		// boucle de game
-		while (!this.game.isFinished()) {
+		while (!this.game.isFinished() && !this.gui.isClosed()) {
 			// demande controle utilisateur
 			Cmd c = this.gameController.getCommand();
 			// fait evoluer le game
@@ -66,7 +82,7 @@ public class GameEngineGraphical {
 			Thread.sleep(100);
 		}
 
-		// AJOUT : fin de partie -> on ferme la fenêtre de jeu, Main réaffiche le menu
+		// fin de partie (ou fenetre fermee) -> on ferme la fenetre de jeu, Main reaffiche le menu
 		this.gui.close();
 	}
 
