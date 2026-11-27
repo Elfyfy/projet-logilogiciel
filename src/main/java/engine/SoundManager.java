@@ -4,7 +4,6 @@ import javax.sound.sampled.*;
 
 public class SoundManager {
 
-    // volume général en pourcentage (0 = muet, 100 = maximum), réglé depuis le menu Paramètres
     private static volatile int volume = 100;
 
     public static int getVolume() {

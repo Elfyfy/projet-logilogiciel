@@ -422,7 +422,10 @@ public class DemineurPainter implements GamePainter {
     confettis.dessiner(g, ecoule, getWidth(), getHeight());
     if (ecoule > DELAI_MENU_VICTOIRE) {
         String temps = "Temps : " + jeu.getChronometre().getTempsFormate();
-        if (jeu.getNiveauSuivantPossible()) {
+        if (jeu.getNiveauSeul()) {
+            dessinerMenuFin(g, "TOUT EST RÉPARÉ !", new Color(255, 215, 80), new Color(240, 200, 60),
+                    temps, "R : rejouer", "Échap : menu");
+        } else if (jeu.getNiveauSuivantPossible()) {
             dessinerMenuFin(g, "TOUT EST RÉPARÉ !", new Color(255, 215, 80), new Color(240, 200, 60),
                     temps, "Entrée : niveau suivant", "R : rejouer", "Échap : menu");
         } else {

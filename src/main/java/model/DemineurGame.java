@@ -29,6 +29,7 @@ public class DemineurGame implements Game {
 	private boolean retourMenu; // AJOUT : Échap -> retour au menu
 	private boolean niveauSuivant;
 	private boolean niveauSuivantPossible;
+	private boolean niveauSeul;
 	private static boolean moderateur = false;
 	public static void basculerModerateur() {
 		moderateur = !moderateur;
@@ -260,6 +261,8 @@ public class DemineurGame implements Game {
 	public boolean getNiveauSuivant() { return niveauSuivant; }
 	public boolean getNiveauSuivantPossible() { return niveauSuivantPossible; }
 	public void setNiveauSuivantPossible(boolean b) { this.niveauSuivantPossible = b; }
+	public boolean getNiveauSeul() { return niveauSeul; }
+	public void setNiveauSeul(boolean b) { this.niveauSeul = b; }
 	public void setIsOver() {this.isOver = true;}
 	
 	@Override
@@ -272,7 +275,10 @@ public class DemineurGame implements Game {
 
 		if (isOver || isWon) {
 		if (cmd == Cmd.REJOUER) rejouer();
-		else if (cmd == Cmd.SUIVANT && isWon && niveauSuivantPossible) niveauSuivant = true;
+		else if (cmd == Cmd.SUIVANT && isWon) {
+			if (niveauSeul) retourMenu = true;
+			else if (niveauSuivantPossible) niveauSuivant = true;
+		}
 		return;
 }
 

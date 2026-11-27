@@ -12,9 +12,11 @@ public class MenuPrincipal extends JDialog {
 	public static class Parametres {
 		public final int niveau, taille, lignes, colonnes, nbMines;
 		public final boolean pleinEcran; // mode d'affichage choisi dans le menu
+		public final boolean histoire;
 
-		private Parametres(int niveau, int taille, int lignes, int colonnes, int nbMines, boolean pleinEcran) {
+		private Parametres(int niveau, int taille, int lignes, int colonnes, int nbMines, boolean pleinEcran, boolean histoire) {
 			this.pleinEcran = pleinEcran;
+			this.histoire = histoire;
 			this.niveau = niveau;
 			this.taille = taille;
 			this.lignes = lignes;
@@ -34,6 +36,7 @@ public class MenuPrincipal extends JDialog {
 	private static final int PARAMETRES = 3; // COMMANDES / AFFICHAGE / VOLUME
 	private static final int AFFICHAGE = 4;  // fenêtré / plein écran
 	private static final int VOLUME = 5;     // volume du son
+	private static final int MODE = 6;
 	private static final int PAS_VOLUME = 10;
 
 	// on retient les derniers choix du joueur
@@ -41,16 +44,13 @@ public class MenuPrincipal extends JDialog {
 	private static int tailleMemo = 1;
 	private static boolean pleinEcranMemo = true;
 
-	// taille de la fenêtre en mode fenêtré
 	private static final int LARGEUR_FENETRE = 1000;
 	private static final int HAUTEUR_FENETRE = 700;
 
-	/** Dernier mode d'affichage choisi (true : plein écran, false : fenêtré). */
 	public static boolean isPleinEcran() {
 		return pleinEcranMemo;
 	}
 
-	// Retourne les dimensions correspondant à une taille
 	public static final int[] dimensionsPourTaille(int taille) {
 		return TAILLES[taille].clone();
 	}
@@ -67,6 +67,7 @@ public class MenuPrincipal extends JDialog {
 	private boolean pleinEcran = pleinEcranMemo;
 	private boolean reconstruire = false;
 	private boolean lancer = false;
+	private boolean histoire = false;
 	private boolean attenteTouche = false;
 	private Image fond;
 
@@ -122,7 +123,15 @@ public class MenuPrincipal extends JDialog {
 	}
 
 	public static Parametres afficher() {
+		return afficher(false);
+	}
+
+	public static Parametres afficher(boolean retourChoixNiveau) {
 		MenuPrincipal menu = new MenuPrincipal(null);
+		if (retourChoixNiveau) {
+			menu.ecran = PARTIE;
+			menu.ligne = 2;
+		}
 		menu.setVisible(true);
 		while (menu.reconstruire) {
 			menu = new MenuPrincipal(menu);
@@ -131,18 +140,26 @@ public class MenuPrincipal extends JDialog {
 		pleinEcranMemo = menu.pleinEcran;
 
 		if (!menu.lancer) return null;
+		if (menu.histoire) {
+			int[] d = dimensionsPourTaille(0);
+			return new Parametres(0, 0, d[0], d[1], calculerNbMines(d[0], d[1], 0), menu.pleinEcran, true);
+		}
 		niveauMemo = menu.niveau;
 		tailleMemo = menu.taille;
 		int[] dimensions = dimensionsPourTaille(menu.taille);
 		int lignes = dimensions[0];
 		int colonnes = dimensions[1];
 		int nbMines = calculerNbMines(lignes, colonnes, menu.niveau);
-		return new Parametres(menu.niveau, menu.taille, lignes, colonnes, nbMines, menu.pleinEcran);
+		return new Parametres(menu.niveau, menu.taille, lignes, colonnes, nbMines, menu.pleinEcran, false);
 	}
 
 	private String[] boutons() {
 		if (ecran == ACCUEIL) {
 			return new String[] {"JOUER", "PARAMÈTRES", "QUITTER"};
+		}
+
+		if (ecran == MODE) {
+			return new String[] {"NIVEAUX", "HISTOIRE", "RETOUR"};
 		}
 
 		if (ecran == PARAMETRES) {
@@ -227,6 +244,8 @@ public class MenuPrincipal extends JDialog {
 				allerVers(PARAMETRES, 2);
 			} else if (ecran == PARAMETRES) {
 				allerVers(ACCUEIL, 1);
+			} else if (ecran == PARTIE) {
+				allerVers(MODE, 0);
 			} else {
 				allerVers(ACCUEIL, 0);
 			}
@@ -258,11 +277,22 @@ public class MenuPrincipal extends JDialog {
 	private void valider() {
 		if (ecran == ACCUEIL) {
 			if (ligne == 0) {
-				allerVers(PARTIE, 2);      // JOUER -> réglages, curseur sur LANCER
+				allerVers(MODE, 0);
 			} else if (ligne == 1) {
 				allerVers(PARAMETRES, 0);  // PARAMÈTRES -> sous-menu
 			} else {
 				dispose();                 // QUITTER
+			}
+
+		} else if (ecran == MODE) {
+			if (ligne == 0) {
+				allerVers(PARTIE, 2);
+			} else if (ligne == 1) {
+				histoire = true;
+				lancer = true;
+				dispose();
+			} else {
+				allerVers(ACCUEIL, 0);
 			}
 
 		} else if (ecran == PARAMETRES) {
@@ -297,7 +327,7 @@ public class MenuPrincipal extends JDialog {
 				lancer = true;
 				dispose();
 			} else if (ligne == 3) {
-				allerVers(ACCUEIL, 0);   
+				allerVers(MODE, 0);
 			} else {
 				changer(1);
 			}
@@ -352,6 +382,9 @@ public class MenuPrincipal extends JDialog {
 			return attenteTouche
 				? "Appuie sur la nouvelle touche      ECHAP : annuler"
 				: "Z / S : naviguer      ESPACE : changer la touche      ECHAP : retour";
+		}
+		if (ecran == MODE) {
+			return "Z / S : naviguer      ESPACE : valider      ECHAP : retour";
 		}
 		if (ecran == PARTIE) {
 			return "Z / S : naviguer      Q / D : modifier      ESPACE : valider      ECHAP : retour";
